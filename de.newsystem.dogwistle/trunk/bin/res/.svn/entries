@@ -1,0 +1,37 @@
+10
+
+dir
+240
+svn://192.168.1.4/Android/de.newsystem.dogwistle/trunk/bin/res
+svn://192.168.1.4
+
+
+
+2011-10-31T19:26:34.727022Z
+195
+basti
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bcefb0a0-d1da-4247-8a76-bfd1d38dca6e
+
+drawable-hdpi
+dir
+
+drawable-ldpi
+dir
+
+drawable-mdpi
+dir
+
