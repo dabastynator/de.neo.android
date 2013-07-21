@@ -6,7 +6,7 @@ import de.newsystem.opengl.common.GLCube;
 import de.newsystem.opengl.common.GLCylinder;
 import de.newsystem.opengl.common.GLFigure;
 
-public class GLFloorlamp extends GLFigure {
+public class GLFloorlamp extends GLFigure implements GLLight{
 
 	public GLCube bottom;
 	public GLCube light;
@@ -30,6 +30,8 @@ public class GLFloorlamp extends GLFigure {
 		pillar.ancX = 90;
 		pillar.y = 0.5f;
 		pillar.SizeX = pillar.SizeY = 0.4f;
+		
+		
 	}
 
 	@Override

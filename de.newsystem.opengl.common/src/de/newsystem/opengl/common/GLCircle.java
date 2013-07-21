@@ -21,7 +21,7 @@ public class GLCircle extends GLFigure {
 
 	public GLCircle(int parts, int style) {
 		vertex = new float[parts * 3 + 3];
-		float steps = (float) ((Math.PI * 1.5) / (parts));
+		float steps = (float) ((Math.PI * 2) / (parts));
 
 		// alle Punke für die obere und untere Platte des Zylinders
 		for (int i = 0; i <= parts; i++) {
@@ -48,19 +48,20 @@ public class GLCircle extends GLFigure {
 
 	private void createPlaneIndices(int parts) {
 		// Alle Quadrate als zwei Dreiecke zeichnen
-		indices = new short[parts + 2];
+		indices = new short[parts + 3];
 		indices[0] = (short) parts;
 		for (int i = 0; i <= parts; i++) {
-			indices[i + 1] = (short) (i);
+			indices[i + 1] = (short) (i % parts);
 		}
+
 		textureCoordinates = new float[parts * 2 + 4];
-		textureCoordinates[0] = 0.5f;
-		textureCoordinates[1] = 0.5f;		
 		float steps = (float) ((Math.PI * 2) / parts);
 		for (int i = 0; i <= parts; i++) {
-			textureCoordinates[i * 2 + 2] = (float) (0.5+(Math.sin(steps * i)) / 2);
-			textureCoordinates[i * 2 + 3] = (float) (0.5+(Math.cos(steps * i)) / 2);
+			textureCoordinates[i * 2 + 0] = (float) (0.5 + (Math.sin(steps * i)) / 2);
+			textureCoordinates[i * 2 + 1] = (float) (0.5 + (Math.cos(steps * i)) / 2);
 		}
+		textureCoordinates[parts * 2 + 0] = 0.5f;
+		textureCoordinates[parts * 2 + 1] = 0.5f;
 
 		mTextureBuffer = allocate(textureCoordinates);
 
@@ -79,7 +80,6 @@ public class GLCircle extends GLFigure {
 	@Override
 	protected void onDraw(GL10 gl) {
 		gl.glFrontFace(GL10.GL_CCW);
-		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glCullFace(GL10.GL_FRONT);
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);

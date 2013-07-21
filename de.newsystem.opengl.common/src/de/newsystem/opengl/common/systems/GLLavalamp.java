@@ -1,104 +1,56 @@
 package de.newsystem.opengl.common.systems;
 
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
 
+import de.newsystem.opengl.common.GLCircle;
 import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.GLFunctionFigure;
 
-public class GLLavalamp extends GLFigure {
+public class GLLavalamp extends GLFigure implements GLLight {
 
-	private FloatBuffer vertexBuffer;
-	private ShortBuffer indexBuffer;
-	private short[] indices;
-	private int style;
-	private FloatBuffer textureBuffer;
+	private GLFunctionFigure function;
+	private GLCircle top;
+	private GLCircle bottom;
 
-	public GLLavalamp(int style, int slices) {
-		float[] vertices = new float[slices * (slices + 1) * 3];
-		float[] texture = new float[slices * (slices + 1) * 2];
-
-		float stepX = (float) (2 * Math.PI / slices);
-		for (int i = 0; i < slices; i++) {
-			float y = ((float) i) / (slices - 1);
-			float mulX = (float) (1 + 0.3 * Math.sin(Math.PI * 2 * ((float) i)
-					/ (slices - 1)));
-			for (int j = 0; j <= slices; j++) {
-				float x = (float) Math.cos(stepX * j) * mulX;
-				float z = (float) Math.sin(stepX * j) * mulX;
-				vertices[3 * (i * (slices + 1) + j)] = x;
-				vertices[3 * (i * (slices + 1) + j) + 1] = y;
-				vertices[3 * (i * (slices + 1) + j) + 2] = z;
-
-				texture[2 * (i * (slices + 1) + j)] = 1 - ((float) j) / slices;
-				texture[2 * (i * (slices + 1) + j) + 1] = 1 - ((float) i)
-						/ (slices - 1);
+	public GLLavalamp(int parts, int style) {
+		GLFunctionFigure.Function f = new GLFunctionFigure.Function() {
+			public float getValue(float x) {
+				return (float) (0.5 + 0.2 * Math.sin(x * 2 * Math.PI));
 			}
-		}
-		vertexBuffer = allocate(vertices);
-		textureBuffer = allocate(texture);
+		};
+		function = new GLFunctionFigure(parts, style, f);
+		top = new GLCircle(parts, style);
+		bottom = new GLCircle(parts, style);
+		top.SizeX = top.SizeY = f.getValue(1);
+		top.y = 1;
+		bottom.SizeX = bottom.SizeY = f.getValue(0);
+		bottom.y = 0;
+		top.ancX = -90;
+		top.ancZ = ((float) 0) / (parts);
+		bottom.ancX = 90;
+		//
+		setLight(true);
+		bottom.red = bottom.green = bottom.blue = 0.2f;
 
-		if (style == GRID)
-			createGridIndices(slices);
-		else
-			createPlaneIndices(slices);
-
+		SizeY = 1f;
+		SizeX = SizeZ = 0.33f;
 	}
 
-	private void createPlaneIndices(int slices) {
-		indices = new short[(slices - 1) * (slices + 1) * 2];
-
-		int counter = 0;
-
-		for (int i = 0; i < slices - 1; i++)
-			for (int j = 0; j <= slices; j++) {
-				indices[counter++] = (short) (i * (slices + 1) + j);
-				indices[counter++] = (short) ((i + 1) * (slices + 1) + j);
-
-			}
-
-		indexBuffer = allocate(indices);
-
-		style = GL10.GL_TRIANGLE_STRIP;
-	}
-
-	private void createGridIndices(int slices) {
-		indices = new short[slices * slices * 2];
-
-		int counter = 0;
-
-		for (int i = 0; i < slices * (slices + 1); i++) {
-			indices[counter++] = (short) i;
+	public void setLight(boolean b) {
+		if (b) {
+			function.red = top.red = 1f;
+			function.green = function.blue = top.green = top.blue = 0.4f;
+		} else {
+			function.red = top.red = 0.4f;
+			function.green = function.blue = top.green = top.blue = 0;
 		}
-		for (int i = 1; i < slices; i++) {
-			for (int j = 0; j < slices; j++) {
-				if (i % 2 == 0)
-					indices[counter++] = (short) ((slices + 1) * j + i);
-				else
-					indices[counter++] = (short) ((slices + 1)
-							* (slices - j - 1) + i);
-			}
-		}
-
-		indexBuffer = allocate(indices);
-
-		style = GL10.GL_LINE_STRIP;
 	}
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glCullFace(GL10.GL_BACK);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-
-		if (texture != null)
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-
-		// Punke zeichnen
-		gl.glDrawElements(style, indices.length, GL10.GL_UNSIGNED_SHORT,
-				indexBuffer);
+		function.draw(gl);
+		top.draw(gl);
+		bottom.draw(gl);
 	}
 
 }

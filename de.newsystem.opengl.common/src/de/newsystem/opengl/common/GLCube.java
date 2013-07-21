@@ -30,13 +30,13 @@ public class GLCube extends GLFigure {
 		if ((sides & BACK) != 0) {
 			squares[0] = new GLSquare(style);
 			squares[0].style = style;
-			squares[0].z = 0.5f;
+			squares[0].z = -0.5f;
 		}
 
 		if ((sides & FRONT) != 0) {
 			squares[1] = new GLSquare(style);
 			squares[1].style = style;
-			squares[1].z = -0.5f;
+			squares[1].z = 0.5f;
 			squares[1].ancX = 180;
 		}
 
