@@ -9,16 +9,10 @@ public class GLCylinder extends GLFigure {
 
 	private FloatBuffer vertexBuffer;
 	private ShortBuffer indexBuffer;
-	private ShortBuffer indexBufferPlate1;
-	private ShortBuffer indexBufferPlate2;
 	private FloatBuffer mTextureBuffer;
-	private FloatBuffer mTextureBufferPlate;
 	private short[] indices;
-	private short[] indicesPlate1;
-	private short[] indicesPlate2;
 	private float[] vertex;
 	private float textureCoordinates[];
-	private float textureCoordinatesPlate[];
 	private int drawStyle;
 
 	/**
@@ -88,7 +82,6 @@ public class GLCylinder extends GLFigure {
 		}
 
 		textureCoordinates = new float[parts * 4 + 4];
-		textureCoordinatesPlate = new float[parts * 4 + 8];
 		float steps = (float) ((Math.PI * 2) / parts);
 		for (int i = 0; i <= parts; i++) {
 			// Textur für den Mantel
@@ -99,39 +92,9 @@ public class GLCylinder extends GLFigure {
 					/ parts;
 			textureCoordinates[i * 2 + parts * 2 + 3] = 1;
 
-			// Textur für die Kreise
-			textureCoordinatesPlate[i * 2] = (float) (1 - (Math.sin(steps * i) + 1) / 2);
-			textureCoordinatesPlate[i * 2 + 1] = (float) ((Math.cos(steps * i) + 1) / 2);
-
-			textureCoordinatesPlate[i * 2 + parts * 2 + 2] = (float) ((Math
-					.sin(steps * i) + 1) / 2);
-			textureCoordinatesPlate[i * 2 + parts * 2 + 3] = (float) ((Math
-					.cos(steps * i) + 1) / 2);
 		}
-		textureCoordinatesPlate[parts * 4 + 4] = 0.5f;
-		textureCoordinatesPlate[parts * 4 + 5] = 0.5f;
-		textureCoordinatesPlate[parts * 4 + 6] = 0.5f;
-		textureCoordinatesPlate[parts * 4 + 7] = 0.5f;
-
-		// Seitliche Platten zeichnen
-		indicesPlate1 = new short[parts + 2];
-		indicesPlate2 = new short[parts + 2];
-		indicesPlate1[0] = (short) (2 * parts + 2);
-		indicesPlate2[0] = (short) (2 * parts + 3);
-		for (int i = 0; i <= parts; i++) {
-			indicesPlate1[i + 1] = (short) i;
-			indicesPlate2[i + 1] = (short) (2 * parts - i + 1);
-		}
-		// indicesPlatte1[parts + 1] = 0;
-		// indicesPlatte2[parts + 1] = (short) (2 * parts + 1);
-
-		indexBufferPlate1 = allocate(indicesPlate1);
-
-		indexBufferPlate2 = allocate(indicesPlate2);
 
 		mTextureBuffer = allocate(textureCoordinates);
-
-		mTextureBufferPlate = allocate(textureCoordinatesPlate);
 
 		drawStyle = GL10.GL_TRIANGLES;
 	}
@@ -167,18 +130,8 @@ public class GLCylinder extends GLFigure {
 		if (texture != null && mTextureBuffer != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBuffer);
 
-		// Punke zeichnen
 		gl.glDrawElements(drawStyle, indices.length, GL10.GL_UNSIGNED_SHORT,
 				indexBuffer);
-		if (indexBufferPlate1 != null) {
-			if (texture != null && mTextureBufferPlate != null)
-				gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBufferPlate);
-
-			gl.glDrawElements(GL10.GL_TRIANGLE_FAN, indicesPlate1.length,
-					GL10.GL_UNSIGNED_SHORT, indexBufferPlate1);
-			gl.glDrawElements(GL10.GL_TRIANGLE_FAN, indicesPlate2.length,
-					GL10.GL_UNSIGNED_SHORT, indexBufferPlate2);
-		}
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisable(GL10.GL_CULL_FACE);
