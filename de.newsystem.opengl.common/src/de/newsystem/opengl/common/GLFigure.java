@@ -113,7 +113,8 @@ public abstract class GLFigure {
 		if (draw_mode == DRAW_MODE_NORMAL)
 			gl.glColor4f(red, green, blue, alpha);
 		else
-			gl.glColor4f(((float) id) / 255, 0, 0, 1);
+			gl.glColor4f(((float) (id % 255)) / 255,
+					((float) (id / 255)) / 255, 0, 1);
 
 		// Figur positionieren
 		gl.glTranslatef(x, y, z);
@@ -194,9 +195,10 @@ public abstract class GLFigure {
 		this.listener = listener;
 	}
 
-	public static GLFigure searchFigure(int id) {
+	public static GLFigure searchFigure(int red, int green) {
 		for (GLFigure figure : allFigures)
-			if (Math.abs(figure.id - id) < 2)
+			if ((Math.abs((figure.id % 255) - red) < 2)
+					&& (Math.abs((figure.id / 255) - green) < 2))
 				return figure;
 		return null;
 	}
@@ -212,9 +214,9 @@ public abstract class GLFigure {
 	 * @author sebastian
 	 */
 	public static interface GLClickListener {
-		
+
 		/**
-		 * The method will be called if the user clicks on the object 
+		 * The method will be called if the user clicks on the object
 		 */
 		public void onGLClick();
 	}

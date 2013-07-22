@@ -2,11 +2,16 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Bitmap;
 import de.newsystem.opengl.common.GLCube;
 import de.newsystem.opengl.common.GLCylinder;
 import de.newsystem.opengl.common.GLFigure;
 
-public class GLFloorlamp extends GLFigure implements GLLight{
+public class GLFloorlamp extends GLFigure implements GLLight {
+
+	public static final int BOTTOM = 1;
+	public static final int PILLAR = 2;
+	public static final int LIGHT = 4;
 
 	public GLCube bottom;
 	public GLCube light;
@@ -31,8 +36,22 @@ public class GLFloorlamp extends GLFigure implements GLLight{
 		pillar.ancX = 90;
 		pillar.y = 0.5f;
 		pillar.SizeX = pillar.SizeY = 0.4f;
-		
-		
+
+	}
+
+	public void setTexture(int surface, Bitmap b) {
+		if ((surface & BOTTOM) != 0) {
+			bottom.setTexture(b);
+			bottom.red = bottom.green = bottom.blue = 1;
+		}
+		if ((surface & PILLAR) != 0) {
+			pillar.setTexture(b);
+			pillar.red = pillar.green = pillar.blue = 1;
+		}
+		if ((surface & LIGHT) != 0) {
+			light.setTexture(b);
+			light.red = light.green = light.blue = 1;
+		}
 	}
 
 	@Override
@@ -47,11 +66,11 @@ public class GLFloorlamp extends GLFigure implements GLLight{
 		if (_light) {
 			light.red = light.green = 1;
 			light.blue = 0.3f;
-		}else{
+		} else {
 			light.red = light.green = light.blue = 0.2f;
 		}
 	}
-	
+
 	@Override
 	public void setOnClickListener(GLClickListener listener) {
 		super.setOnClickListener(listener);
