@@ -11,6 +11,7 @@ public class GLFloorlamp extends GLFigure implements GLLight{
 	public GLCube bottom;
 	public GLCube light;
 	public GLCylinder pillar;
+	private boolean lightOn;
 
 	public GLFloorlamp(int style) {
 		bottom = new GLCube(style);
@@ -42,12 +43,26 @@ public class GLFloorlamp extends GLFigure implements GLLight{
 	}
 
 	public void setLight(boolean _light) {
+		lightOn = _light;
 		if (_light) {
 			light.red = light.green = 1;
 			light.blue = 0.3f;
 		}else{
 			light.red = light.green = light.blue = 0.2f;
 		}
+	}
+	
+	@Override
+	public void setOnClickListener(GLClickListener listener) {
+		super.setOnClickListener(listener);
+		bottom.setOnClickListener(listener);
+		light.setOnClickListener(listener);
+		pillar.setOnClickListener(listener);
+	}
+
+	@Override
+	public boolean isLightOn() {
+		return lightOn;
 	}
 
 }

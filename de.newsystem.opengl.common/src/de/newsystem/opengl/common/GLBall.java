@@ -20,8 +20,8 @@ public class GLBall extends GLFigure {
 		float stepY = (float) (Math.PI / (slices - 1));
 		float stepX = (float) (2 * Math.PI / slices);
 		for (int i = 0; i < slices; i++) {
-			float y = (float) Math.cos(stepY * i);
-			float mulX = (float) Math.sin(stepY * i);
+			float y = (float) Math.cos(stepY * i)/2;
+			float mulX = (float) Math.sin(stepY * i)/2;
 			for (int j = 0; j <= slices; j++) {
 				float x = (float) Math.cos(stepX * j) * mulX;
 				float z = (float) Math.sin(stepX * j) * mulX;

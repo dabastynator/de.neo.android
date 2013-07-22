@@ -89,5 +89,16 @@ public class GLCylinderClosed extends GLFigure {
 		if ((surfaces & FRONT) != 0)
 			circleFront.draw(gl);
 	}
+	
+	@Override
+	public void setOnClickListener(GLClickListener listener) {
+		super.setOnClickListener(listener);
+		if(cylinder != null)
+			cylinder.setOnClickListener(listener);
+		if(circleBack != null)
+			circleBack.setOnClickListener(listener);
+		if(circleFront != null)
+			circleFront.setOnClickListener(listener);
+	}
 
 }

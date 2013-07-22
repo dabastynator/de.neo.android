@@ -4,38 +4,116 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 
+/**
+ * The GLFigure provides basically functionality for geometric objects like
+ * position, angle, color, size and texture.
+ * 
+ * @author sebastian
+ */
 public abstract class GLFigure {
 
-	public static final int GRID = 0;
-	public static final int PLANE = 1;
+	/**
+	 * Paint object as grid
+	 */
+	public static final int GRID = 1;
 
-	// Platzierung der Figur
+	/**
+	 * Paint object as solid plane
+	 */
+	public static final int PLANE = 2;
+
+	/**
+	 * Counter for ids.
+	 */
+	private static int ID_COUNTER = 1;
+
+	public static final int DRAW_MODE_NORMAL = 0;
+	public static final int DRAW_MODE_PICK_ID = 1;
+
+	private static List<GLFigure> allFigures = new ArrayList<GLFigure>();
+
+	public static void setFigureDrawMode(int draw_mode) {
+		for (GLFigure f : allFigures)
+			f.draw_mode = draw_mode;
+	}
+
+	/**
+	 * Mode for drawing object or picking id
+	 */
+	private int draw_mode;
+
+	/**
+	 * Position
+	 */
 	public float x, y, z;
+
+	/**
+	 * Size
+	 */
 	public float SizeX, SizeY, SizeZ;
+
+	/**
+	 * Angle
+	 */
 	public float ancX, ancY, ancZ;
 
-	// Farbe der Figur
+	/**
+	 * Color
+	 */
 	public float red, green, blue, alpha = 1;
 
-	// Textur verwalten
+	/**
+	 * Textrue
+	 */
 	protected Bitmap texture;
+
 	protected int[] textures;
 
+	/**
+	 * Unique id for picking object.
+	 */
+	private final int id = ID_COUNTER += 3;
+
+	/**
+	 * Click listener for user interaction
+	 */
+	private GLClickListener listener;
+
+	/**
+	 * allocate new gl figure, it will be registered in a list of all figures.
+	 */
+	public GLFigure() {
+		SizeX = 1;
+		SizeY = 1;
+		SizeZ = 1;
+		allFigures.add(this);
+	}
+
+	/**
+	 * Draw the figure.
+	 * 
+	 * @param gl
+	 */
 	public final void draw(GL10 gl) {
-		
+
 		// Eigene Matrix für Figur
 		gl.glPushMatrix();
-		
+
 		// Textur setzen falls eine vorhanden ist
-		if (texture != null)
+		if (texture != null && draw_mode == DRAW_MODE_NORMAL)
 			setTexture(gl);
-		gl.glColor4f(red, green, blue, alpha);
+		if (draw_mode == DRAW_MODE_NORMAL)
+			gl.glColor4f(red, green, blue, alpha);
+		else
+			gl.glColor4f(((float) id) / 255, 0, 0, 1);
 
 		// Figur positionieren
 		gl.glTranslatef(x, y, z);
@@ -58,21 +136,21 @@ public abstract class GLFigure {
 	}
 
 	private void setTexture(GL10 gl) {
-		if (textures == null) 
+		if (textures == null)
 			loadTexture(gl);
-		
+
 		// Enable texture
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
 	}
 
 	private void loadTexture(GL10 gl) {
-		//	id für Textur 
+		// id für Textur
 		textures = new int[1];
 		gl.glGenTextures(1, textures, 0);
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
-		
+
 		// Parameter für die Textur
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
 				GL10.GL_LINEAR);
@@ -82,15 +160,9 @@ public abstract class GLFigure {
 				GL10.GL_REPEAT);
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
 				GL10.GL_REPEAT);
-		
+
 		// Textur setzen
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture, 0);
-	}
-
-	public GLFigure() {
-		SizeX = 1;
-		SizeY = 1;
-		SizeZ = 1;
 	}
 
 	public void setTexture(Bitmap b) {
@@ -99,8 +171,8 @@ public abstract class GLFigure {
 	}
 
 	protected abstract void onDraw(GL10 gl);
-	
-	protected FloatBuffer allocate(float[] array){
+
+	protected FloatBuffer allocate(float[] array) {
 		ByteBuffer vbb = ByteBuffer.allocateDirect(array.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		FloatBuffer buffer = vbb.asFloatBuffer();
@@ -108,13 +180,42 @@ public abstract class GLFigure {
 		buffer.position(0);
 		return buffer;
 	}
-	
-	protected ShortBuffer allocate(short[] array){
+
+	protected ShortBuffer allocate(short[] array) {
 		ByteBuffer vbb = ByteBuffer.allocateDirect(array.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		ShortBuffer buffer = vbb.asShortBuffer();
 		buffer.put(array);
 		buffer.position(0);
 		return buffer;
+	}
+
+	public void setOnClickListener(GLClickListener listener) {
+		this.listener = listener;
+	}
+
+	public static GLFigure searchFigure(int id) {
+		for (GLFigure figure : allFigures)
+			if (Math.abs(figure.id - id) < 2)
+				return figure;
+		return null;
+	}
+
+	public GLClickListener getOnClickListener() {
+		return listener;
+	}
+
+	/**
+	 * The listener listens for user interactions and fires the method onGLClick
+	 * if the user clicks on the object.
+	 * 
+	 * @author sebastian
+	 */
+	public static interface GLClickListener {
+		
+		/**
+		 * The method will be called if the user clicks on the object 
+		 */
+		public void onGLClick();
 	}
 }

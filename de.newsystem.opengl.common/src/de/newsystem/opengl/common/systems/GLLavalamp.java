@@ -11,6 +11,7 @@ public class GLLavalamp extends GLFigure implements GLLight {
 	private GLFunctionFigure function;
 	private GLCircle top;
 	private GLCircle bottom;
+	private boolean lightOn;
 
 	public GLLavalamp(int parts, int style) {
 		GLFunctionFigure.Function f = new GLFunctionFigure.Function() {
@@ -37,6 +38,7 @@ public class GLLavalamp extends GLFigure implements GLLight {
 	}
 
 	public void setLight(boolean b) {
+		lightOn = b;
 		if (b) {
 			function.red = top.red = 1f;
 			function.green = function.blue = top.green = top.blue = 0.4f;
@@ -45,6 +47,14 @@ public class GLLavalamp extends GLFigure implements GLLight {
 			function.green = function.blue = top.green = top.blue = 0;
 		}
 	}
+	
+	@Override
+	public void setOnClickListener(GLClickListener listener) {
+		super.setOnClickListener(listener);
+		function.setOnClickListener(listener);
+		top.setOnClickListener(listener);
+		bottom.setOnClickListener(listener);
+	}
 
 	@Override
 	protected void onDraw(GL10 gl) {
@@ -52,5 +62,11 @@ public class GLLavalamp extends GLFigure implements GLLight {
 		top.draw(gl);
 		bottom.draw(gl);
 	}
+
+	public boolean isLightOn() {
+		return lightOn;
+	}
+
+	
 
 }

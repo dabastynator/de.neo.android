@@ -4,4 +4,5 @@ public interface GLLight {
 
 	public void setLight(boolean on);
 	
+	public boolean isLightOn();
 }
