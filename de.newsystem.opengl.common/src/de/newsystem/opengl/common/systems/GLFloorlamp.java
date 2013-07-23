@@ -7,7 +7,7 @@ import de.newsystem.opengl.common.GLCube;
 import de.newsystem.opengl.common.GLCylinder;
 import de.newsystem.opengl.common.GLFigure;
 
-public class GLFloorlamp extends GLFigure implements GLLight {
+public class GLFloorlamp extends GLLight {
 
 	public static final int BOTTOM = 1;
 	public static final int PILLAR = 2;
@@ -16,7 +16,6 @@ public class GLFloorlamp extends GLFigure implements GLLight {
 	public GLCube bottom;
 	public GLCube light;
 	public GLCylinder pillar;
-	private boolean lightOn;
 
 	public GLFloorlamp(int style) {
 		bottom = new GLCube(style);
@@ -56,13 +55,14 @@ public class GLFloorlamp extends GLFigure implements GLLight {
 
 	@Override
 	protected void onDraw(GL10 gl) {
+		super.onDraw(gl);
 		bottom.draw(gl);
 		light.draw(gl);
 		pillar.draw(gl);
 	}
 
 	public void setLight(boolean _light) {
-		lightOn = _light;
+		super.setLight(_light);
 		if (_light) {
 			light.red = light.green = 1;
 			light.blue = 0.3f;
@@ -77,11 +77,6 @@ public class GLFloorlamp extends GLFigure implements GLLight {
 		bottom.setOnClickListener(listener);
 		light.setOnClickListener(listener);
 		pillar.setOnClickListener(listener);
-	}
-
-	@Override
-	public boolean isLightOn() {
-		return lightOn;
 	}
 
 }

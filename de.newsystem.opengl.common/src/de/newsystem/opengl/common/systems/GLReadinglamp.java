@@ -6,13 +6,11 @@ import de.newsystem.opengl.common.GLBall;
 import de.newsystem.opengl.common.GLCylinder;
 import de.newsystem.opengl.common.GLFigure;
 
-public class GLReadinglamp extends GLFigure implements GLLight {
+public class GLReadinglamp extends GLLight {
 
 	private GLBall bottom;
 	private GLCylinder top;
 	private GLBall light;
-
-	private boolean lightOn;
 
 	public GLReadinglamp(int style) {
 		bottom = new GLBall(style, 10);
@@ -21,7 +19,7 @@ public class GLReadinglamp extends GLFigure implements GLLight {
 		top = new GLCylinder(15, 0.3f, 0.6f, style);
 		top.ancX = -90;
 		top.y = 1.2f;
-		top.SizeY = 0.8f;
+		top.SizeZ = 0.8f;
 
 		light = new GLBall(style, 7);
 		light.y = 1.2f;
@@ -34,7 +32,7 @@ public class GLReadinglamp extends GLFigure implements GLLight {
 
 	@Override
 	public void setLight(boolean on) {
-		lightOn = on;
+		super.setLight(on);
 		if (on) {
 			bottom.red = bottom.green = bottom.blue = 0.8f;
 			top.red = top.green = top.blue = 0.9f;
@@ -49,12 +47,8 @@ public class GLReadinglamp extends GLFigure implements GLLight {
 	}
 
 	@Override
-	public boolean isLightOn() {
-		return lightOn;
-	}
-
-	@Override
 	protected void onDraw(GL10 gl) {
+		super.onDraw(gl);
 		bottom.draw(gl);
 		light.draw(gl);
 		gl.glDisable(GL10.GL_CULL_FACE);

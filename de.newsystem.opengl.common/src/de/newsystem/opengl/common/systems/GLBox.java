@@ -55,13 +55,13 @@ public class GLBox extends GLFigure {
 		speaker.draw(gl);
 	}
 
-	public void setTexture(int surface, Bitmap b) {
+	public void setTexture(int surface, Bitmap b, float brightness) {
 		if ((surface & BOX) != 0) {
 			cube.setTexture(GLCube.LEFT | GLCube.RIGHT | GLCube.TOP
 					| GLCube.DOWN | GLCube.BACK, b);
-			cube.red = cube.green = cube.blue = 1;
+			cube.red = cube.green = cube.blue = brightness;
 			plate.setTexture(b);
-			plate.red = plate.green = plate.blue = 1;
+			plate.red = plate.green = plate.blue = brightness;
 		}
 		if ((surface & SPEAKER) != 0) {
 			speaker.setTexture(GLCylinderClosed.CYLINDER, b);

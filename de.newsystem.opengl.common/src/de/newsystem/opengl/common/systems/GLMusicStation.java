@@ -61,8 +61,8 @@ public class GLMusicStation extends GLFigure {
 			box.setVolume(50);
 	}
 
-	public void setTexture(int surface, Bitmap bitmap) {
-		box.setTexture(surface, bitmap);
+	public void setTexture(int surface, Bitmap bitmap, float brightness) {
+		box.setTexture(surface, bitmap, brightness);
 	}
 
 }
