@@ -3,10 +3,9 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.GLBoxplate;
-import de.newsystem.opengl.common.GLCube;
-import de.newsystem.opengl.common.GLCylinder;
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLBoxplate;
+import de.newsystem.opengl.common.fibures.GLCube;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 public class GLBox extends GLFigure {
 
@@ -20,6 +19,7 @@ public class GLBox extends GLFigure {
 	private float volume;
 
 	public GLBox(int style) {
+		super(style);
 		cube = new GLCube(style, GLCube.LEFT | GLCube.RIGHT | GLCube.TOP
 				| GLCube.DOWN | GLCube.BACK);
 		cube.SizeX = cube.SizeZ = 0.5f;
@@ -32,9 +32,9 @@ public class GLBox extends GLFigure {
 		plate.blue = cube.blue = 0.03f;
 
 		speaker = new GLCylinderClosed(Parts, style, GLCylinderClosed.BACK
-				| GLCylinderClosed.CYLINDER, 0.5f, 0.15f);
-		speaker.setColor(GLCylinderClosed.BACK, 0, 0, 0);
-		speaker.setColor(GLCylinderClosed.CYLINDER, 0.2f, 0.2f, 0.2f);
+				| GLCylinderClosed.CYLINDER, 0.5f, 0.2f);
+		speaker.setColor(GLCylinderClosed.BACK, 0.5f, 0.5f, 0.5f);
+		speaker.setColor(GLCylinderClosed.CYLINDER, 0.1f, 0.1f, 0.1f);
 		speaker.SizeZ = 0.05f;
 		speaker.z = cube.SizeZ / 2 - speaker.SizeZ / 2;
 	}
@@ -59,7 +59,7 @@ public class GLBox extends GLFigure {
 		if ((surface & BOX) != 0) {
 			cube.setTexture(GLCube.LEFT | GLCube.RIGHT | GLCube.TOP
 					| GLCube.DOWN | GLCube.BACK, b);
-			cube.red = cube.green = cube.blue = brightness;
+			cube.setColor(brightness, brightness, brightness);
 			plate.setTexture(b);
 			plate.red = plate.green = plate.blue = brightness;
 		}

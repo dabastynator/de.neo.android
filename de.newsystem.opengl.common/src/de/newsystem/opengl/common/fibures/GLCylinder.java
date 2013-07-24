@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -29,6 +29,7 @@ public class GLCylinder extends GLFigure {
 	}
 
 	public GLCylinder(int parts, float radiusFront, float radiusBack, int style) {
+		super(style);
 		vertex = new float[parts * 6 + 12];
 		float steps = (float) ((Math.PI * 2) / parts);
 

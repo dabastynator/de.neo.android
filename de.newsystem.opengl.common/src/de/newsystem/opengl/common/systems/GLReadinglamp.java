@@ -2,9 +2,9 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.GLBall;
-import de.newsystem.opengl.common.GLCylinder;
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLBall;
+import de.newsystem.opengl.common.fibures.GLCylinder;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 public class GLReadinglamp extends GLLight {
 
@@ -13,6 +13,7 @@ public class GLReadinglamp extends GLLight {
 	private GLBall light;
 
 	public GLReadinglamp(int style) {
+		super(style);
 		bottom = new GLBall(style, 10);
 		bottom.y = 0.5f;
 

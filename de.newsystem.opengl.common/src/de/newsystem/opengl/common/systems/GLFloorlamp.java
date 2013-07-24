@@ -3,9 +3,8 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.GLCube;
-import de.newsystem.opengl.common.GLCylinder;
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLCube;
+import de.newsystem.opengl.common.fibures.GLCylinder;
 
 public class GLFloorlamp extends GLLight {
 
@@ -18,6 +17,7 @@ public class GLFloorlamp extends GLLight {
 	public GLCylinder pillar;
 
 	public GLFloorlamp(int style) {
+		super(style);
 		bottom = new GLCube(style);
 		light = new GLCube(style);
 		pillar = new GLCylinder(7, 0.2f, 0.2f, style);
@@ -41,7 +41,7 @@ public class GLFloorlamp extends GLLight {
 	public void setTexture(int surface, Bitmap b) {
 		if ((surface & BOTTOM) != 0) {
 			bottom.setTexture(b);
-			bottom.red = bottom.green = bottom.blue = 1;
+			bottom.setColor(1, 1, 1);
 		}
 		if ((surface & PILLAR) != 0) {
 			pillar.setTexture(b);
@@ -49,7 +49,7 @@ public class GLFloorlamp extends GLLight {
 		}
 		if ((surface & LIGHT) != 0) {
 			light.setTexture(b);
-			light.red = light.green = light.blue = 1;
+			light.setColor(1, 1, 1);
 		}
 	}
 
@@ -64,10 +64,9 @@ public class GLFloorlamp extends GLLight {
 	public void setLight(boolean _light) {
 		super.setLight(_light);
 		if (_light) {
-			light.red = light.green = 1;
-			light.blue = 0.3f;
+			light.setColor(1, 1, 0.3f);
 		} else {
-			light.red = light.green = light.blue = 0.2f;
+			light.setColor(0.2f, 0.2f, 0.2f);
 		}
 	}
 

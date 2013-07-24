@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -27,6 +27,7 @@ public class GLCube extends GLFigure {
 	}
 
 	public GLCube(int style, int surface) {
+		super(style);
 		squares = new GLSquare[6];
 
 		if ((surface & BACK) != 0) {
@@ -75,6 +76,11 @@ public class GLCube extends GLFigure {
 		this(style, FRONT | BACK | LEFT | RIGHT | TOP | DOWN);
 	}
 
+	@Override
+	public void setTexture(Bitmap b) {
+		setTexture(TOP | DOWN | LEFT | RIGHT | BACK | FRONT, b);
+	}
+
 	public void setTexture(int surface, Bitmap b) {
 		if ((surface & BACK) != 0) {
 			squares[0].setTexture(b);
@@ -105,9 +111,6 @@ public class GLCube extends GLFigure {
 	protected void onDraw(GL10 gl) {
 		for (int i = 0; i < squares.length; i++) {
 			if (squares[i] != null) {
-				squares[i].blue = blue;
-				squares[i].red = red;
-				squares[i].green = green;
 				squares[i].draw(gl);
 			}
 		}
@@ -119,6 +122,16 @@ public class GLCube extends GLFigure {
 		for (int i = 0; i < squares.length; i++) {
 			if (squares[i] != null) {
 				squares[i].setOnClickListener(listener);
+			}
+		}
+	}
+
+	public void setColor(float red, float green, float blue) {
+		for (int i = 0; i < squares.length; i++) {
+			if (squares[i] != null) {
+				squares[i].red = red;
+				squares[i].green = green;
+				squares[i].blue = blue;
 			}
 		}
 	}

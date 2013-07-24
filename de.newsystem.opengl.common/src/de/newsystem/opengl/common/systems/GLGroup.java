@@ -1,11 +1,12 @@
 package de.newsystem.opengl.common.systems;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 /**
  * The GLGroup groups several gl figures.
@@ -14,24 +15,38 @@ import de.newsystem.opengl.common.GLFigure;
  */
 public class GLGroup extends GLFigure {
 
-	private List<GLFigure> childs;
+	private List<GLFigure> children;
 
 	public GLGroup() {
-		childs = new ArrayList<GLFigure>();
+		super(PLANE);
+		children = Collections.synchronizedList(new ArrayList<GLFigure>());
 	}
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		for (GLFigure child: childs)
+		for (GLFigure child : children)
 			child.draw(gl);
 	}
 
-	public void addFigure(GLFigure figure){
-		childs.add(figure);
+	public void addFigure(GLFigure figure) {
+		children.add(figure);
 	}
-	
-	public void removeFigure(GLFigure figure){
-		childs.remove(figure);
+
+	public void removeFigure(GLFigure figure) {
+		allFigures.remove(figure);
+		children.remove(figure);
 	}
-	
+
+	/**
+	 * Remove all children.
+	 */
+	public void clear() {
+		for (GLFigure child : children) {
+			if (child instanceof GLGroup)
+				((GLGroup) child).clear();
+			allFigures.remove(child);
+		}
+		children.clear();
+	}
+
 }

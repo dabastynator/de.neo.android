@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,6 +21,11 @@ import android.opengl.GLUtils;
 public abstract class GLFigure {
 
 	/**
+	 * Number of color values per id.
+	 */
+	public static final int IDS_PER_COLOR = 16;
+
+	/**
 	 * Paint object as grid
 	 */
 	public static final int GRID = 1;
@@ -38,7 +43,7 @@ public abstract class GLFigure {
 	public static final int DRAW_MODE_NORMAL = 0;
 	public static final int DRAW_MODE_PICK_ID = 1;
 
-	private static List<GLFigure> allFigures = new ArrayList<GLFigure>();
+	protected static List<GLFigure> allFigures = new ArrayList<GLFigure>();
 
 	public static void setFigureDrawMode(int draw_mode) {
 		for (GLFigure f : allFigures)
@@ -80,20 +85,23 @@ public abstract class GLFigure {
 	/**
 	 * Unique id for picking object.
 	 */
-	private final int id = ID_COUNTER += 3;
+	private final int id = ID_COUNTER += 1;
 
 	/**
 	 * Click listener for user interaction
 	 */
 	private GLClickListener listener;
 
+	private int style;
+
 	/**
 	 * allocate new gl figure, it will be registered in a list of all figures.
 	 */
-	public GLFigure() {
+	public GLFigure(int style) {
 		SizeX = 1;
 		SizeY = 1;
 		SizeZ = 1;
+		this.style = style;
 		allFigures.add(this);
 	}
 
@@ -104,6 +112,9 @@ public abstract class GLFigure {
 	 */
 	public final void draw(GL10 gl) {
 
+		if (draw_mode == DRAW_MODE_PICK_ID && style == GRID)
+			return;
+
 		// Eigene Matrix für Figur
 		gl.glPushMatrix();
 
@@ -112,9 +123,14 @@ public abstract class GLFigure {
 			setTexture(gl);
 		if (draw_mode == DRAW_MODE_NORMAL)
 			gl.glColor4f(red, green, blue, alpha);
-		else
-			gl.glColor4f(((float) (id % 255)) / 255,
-					((float) (id / 255)) / 255, 0, 1);
+		else {
+			float r = ((float) id % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
+			float g = ((float) (id / IDS_PER_COLOR) % IDS_PER_COLOR)
+					/ (IDS_PER_COLOR - 1);
+			float b = ((float) (id / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
+					/ (IDS_PER_COLOR - 1);
+			gl.glColor4f(r, g, b, 1);
+		}
 
 		// Figur positionieren
 		gl.glTranslatef(x, y, z);
@@ -195,11 +211,18 @@ public abstract class GLFigure {
 		this.listener = listener;
 	}
 
-	public static GLFigure searchFigure(int red, int green) {
-		for (GLFigure figure : allFigures)
-			if ((Math.abs((figure.id % 255) - red) < 2)
-					&& (Math.abs((figure.id / 255) - green) < 2))
+	public static GLFigure searchFigure(int red, int green, int blue) {
+		for (GLFigure figure : allFigures) {
+			float r = ((float) figure.id % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
+			float g = ((float) (figure.id / IDS_PER_COLOR) % IDS_PER_COLOR)
+					/ (IDS_PER_COLOR - 1);
+			float b = ((float) (figure.id / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
+					/ (IDS_PER_COLOR - 1);
+			if ((Math.abs(256 * r - red) < (IDS_PER_COLOR / 3f))
+					&& (Math.abs(256 * g - green) < (IDS_PER_COLOR / 3f))
+					&& (Math.abs(256 * b - blue) < (IDS_PER_COLOR / 3f)))
 				return figure;
+		}
 		return null;
 	}
 
@@ -219,5 +242,9 @@ public abstract class GLFigure {
 		 * The method will be called if the user clicks on the object
 		 */
 		public void onGLClick();
+	}
+
+	public int getID() {
+		return id;
 	}
 }

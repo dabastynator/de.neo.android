@@ -2,9 +2,9 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.GLCylinder;
-import de.newsystem.opengl.common.GLFigure;
-import de.newsystem.opengl.common.GLTorus;
+import de.newsystem.opengl.common.fibures.GLCylinder;
+import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.fibures.GLTorus;
 
 public class GLWheel extends GLFigure {
 
@@ -20,6 +20,7 @@ public class GLWheel extends GLFigure {
 	 * @param style 
 	 */
 	public GLWheel(int spokeCount, int style) {
+		super(style);
 		// Torus als Schlauch
 		torus = new GLTorus(RADIUS_MAJOR, RADIUS_MINOR, style);
 		// braune Farbe für den Schlauch

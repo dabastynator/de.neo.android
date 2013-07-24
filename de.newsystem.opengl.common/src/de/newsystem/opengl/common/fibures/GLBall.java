@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -14,6 +14,7 @@ public class GLBall extends GLFigure {
 	private FloatBuffer textureBuffer;
 
 	public GLBall(int style, int slices) {
+		super(style);
 		float[] vertices = new float[slices * (slices + 1) * 3];
 		float[] texture = new float[slices * (slices + 1) * 2];
 

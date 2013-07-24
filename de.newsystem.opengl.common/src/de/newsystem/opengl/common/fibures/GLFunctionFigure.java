@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -14,6 +14,7 @@ public class GLFunctionFigure extends GLFigure {
 	private FloatBuffer textureBuffer;
 
 	public GLFunctionFigure(int parts, int style, Function f) {
+		super(style);
 		float[] vertices = new float[parts * (parts + 1) * 3];
 		float[] texture = new float[parts * (parts + 1) * 2];
 

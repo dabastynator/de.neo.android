@@ -3,9 +3,9 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.GLCircle;
-import de.newsystem.opengl.common.GLCylinder;
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLCircle;
+import de.newsystem.opengl.common.fibures.GLCylinder;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 public class GLCylinderClosed extends GLFigure {
 
@@ -28,6 +28,7 @@ public class GLCylinderClosed extends GLFigure {
 	
 	public GLCylinderClosed(int parts, int style, int surfaces,
 			float radiusFront, float radiusBack) {
+		super(style);
 		this.surfaces = surfaces;
 		if ((surfaces & CYLINDER) != 0) {
 			cylinder = new GLCylinder(parts, radiusFront, radiusBack, style);
@@ -101,4 +102,7 @@ public class GLCylinderClosed extends GLFigure {
 			circleFront.setOnClickListener(listener);
 	}
 
+	public void setColor(float red, float green, float blue) {
+		setColor(BACK|FRONT|CYLINDER, red, green, blue);
+	}
 }

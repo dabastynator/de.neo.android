@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -16,6 +16,7 @@ public class GLBoxplate extends GLFigure {
 	private int drawStyle;
 
 	public GLBoxplate(int parts, float y1, float r1, float y2, float r2) {
+		super(GLFigure.PLANE);
 		vertex = new float[(2 * parts + 6) * 3];
 		float steps = (float) ((Math.PI * 2) / (parts));
 
@@ -103,11 +104,11 @@ public class GLBoxplate extends GLFigure {
 		textureCoordinates = new float[(2 * parts + 6) * 2];
 		float steps = (float) ((Math.PI * 2) / parts);
 		for (int i = 0; i < parts; i++) {
-			textureCoordinates[i * 2 + 0] = (float) (0.5 + r1
+			textureCoordinates[i * 2 + 0] = (float) (0.5 + r1 * 2f
 					* (Math.sin(steps * i)));
 			textureCoordinates[i * 2 + 1] = (float) (y1 + r1
 					* (Math.cos(steps * i)));
-			textureCoordinates[(i + parts) * 2 + 0] = (float) (0.5 + r2
+			textureCoordinates[(i + parts) * 2 + 0] = (float) (0.5 + r2 * 2f
 					* (Math.sin(steps * i)));
 			textureCoordinates[(i + parts) * 2 + 1] = (float) (y2 + r2
 					* (Math.cos(steps * i)));
@@ -118,7 +119,7 @@ public class GLBoxplate extends GLFigure {
 		textureCoordinates[parts * 4 + 3] = 0.5f;
 		textureCoordinates[parts * 4 + 4] = 1;
 		textureCoordinates[parts * 4 + 5] = 0;
-		
+
 		textureCoordinates[parts * 4 + 6] = 0;
 		textureCoordinates[parts * 4 + 7] = 0;
 		textureCoordinates[parts * 4 + 8] = 0;

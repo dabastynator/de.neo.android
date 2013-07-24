@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -24,6 +24,7 @@ public class GLTorus extends GLFigure {
 	public int paintStyle;
 
 	public GLTorus(float rmajor, float rminor, int style) {
+		super(style);
 		vertex = new float[(SLICE_MAJOR + 1) * (SLICE_MINOR + 1) * 3];
 
 		float stepMajor = (float) ((Math.PI * 2) / SLICE_MAJOR);

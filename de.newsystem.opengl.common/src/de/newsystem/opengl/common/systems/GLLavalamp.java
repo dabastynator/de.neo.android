@@ -2,9 +2,9 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.GLCircle;
-import de.newsystem.opengl.common.GLFigure;
-import de.newsystem.opengl.common.GLFunctionFigure;
+import de.newsystem.opengl.common.fibures.GLCircle;
+import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.fibures.GLFunctionFigure;
 
 public class GLLavalamp extends GLLight {
 
@@ -13,6 +13,7 @@ public class GLLavalamp extends GLLight {
 	private GLCircle bottom;
 
 	public GLLavalamp(int parts, int style) {
+		super(style);
 		GLFunctionFigure.Function f = new GLFunctionFigure.Function() {
 			public float getValue(float x) {
 				return (float) (0.5 + 0.2 * Math.sin(x * 2 * Math.PI));

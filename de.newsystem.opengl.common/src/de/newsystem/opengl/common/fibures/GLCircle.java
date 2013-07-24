@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -20,6 +20,7 @@ public class GLCircle extends GLFigure {
 	}
 
 	public GLCircle(int parts, int style) {
+		super(style);
 		vertex = new float[parts * 3 + 3];
 		float steps = (float) ((Math.PI * 2) / (parts));
 

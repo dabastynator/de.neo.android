@@ -2,11 +2,15 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 public class GLLight extends GLFigure{
 
 	protected boolean isLightOn = false;
+	
+	public GLLight(int style) {
+		super(style);
+	}
 	
 	public void setLight(boolean on){
 		isLightOn = on;

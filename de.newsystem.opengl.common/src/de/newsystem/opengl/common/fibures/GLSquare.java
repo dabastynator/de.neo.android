@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common;
+package de.newsystem.opengl.common.fibures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -32,6 +32,7 @@ public class GLSquare extends GLFigure {
 	private short[] indices;
 
 	public GLSquare(int style) {
+		super(style);
 		this.style = style;
 		if (style == PLANE) {
 			paintStyle = GL10.GL_TRIANGLES;

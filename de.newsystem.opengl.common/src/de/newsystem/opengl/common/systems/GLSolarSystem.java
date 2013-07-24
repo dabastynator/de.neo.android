@@ -3,9 +3,8 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-
-import de.newsystem.opengl.common.GLBall;
-import de.newsystem.opengl.common.GLFigure;
+import de.newsystem.opengl.common.fibures.GLBall;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 public class GLSolarSystem extends GLFigure{
 
@@ -13,6 +12,7 @@ public class GLSolarSystem extends GLFigure{
 	private GLBall moon;
 
 	public GLSolarSystem(int style) {
+		super(style);
 		earth = new GLBall(style, 30);
 		earth.SizeX = earth.SizeY = earth.SizeZ = 1; 
 		moon = new GLBall(style, 30);
