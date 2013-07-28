@@ -37,6 +37,7 @@ public class GLBox extends GLFigure {
 		speaker.setColor(GLCylinderClosed.CYLINDER, 0.1f, 0.1f, 0.1f);
 		speaker.SizeZ = 0.05f;
 		speaker.z = cube.SizeZ / 2 - speaker.SizeZ / 2;
+		setVolume(50);
 	}
 
 	@Override

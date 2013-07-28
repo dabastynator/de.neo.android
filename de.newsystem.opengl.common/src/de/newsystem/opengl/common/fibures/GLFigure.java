@@ -21,9 +21,12 @@ import android.opengl.GLUtils;
 public abstract class GLFigure {
 
 	/**
-	 * Number of color values per id.
+	 * Number of color values per id. Because of the maximum difference of 12,
+	 * there is a distance of 6 to the optimum -> the difference must be lower
+	 * than 1/3 times the IDS_PER_COLOR -> IDS_PER_COLOR = 3*(average
+	 * distance)+1
 	 */
-	public static final int IDS_PER_COLOR = 16;
+	public static final int IDS_PER_COLOR = 3 * 6 + 1;
 
 	/**
 	 * Paint object as grid
@@ -129,6 +132,12 @@ public abstract class GLFigure {
 					/ (IDS_PER_COLOR - 1);
 			float b = ((float) (id / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
 					/ (IDS_PER_COLOR - 1);
+			int ir = (int) (r * 255);
+			int ig = (int) (g * 255);
+			int ib = (int) (b * 255);
+			GLFigure searchFigure = searchFigure(ir, ig, ib);
+			if (this != searchFigure)
+				ir++;
 			gl.glColor4f(r, g, b, 1);
 		}
 
@@ -246,5 +255,10 @@ public abstract class GLFigure {
 
 	public int getID() {
 		return id;
+	}
+
+	public static void reloadTextures() {
+		for (GLFigure figure : allFigures)
+			figure.textures = null;
 	}
 }

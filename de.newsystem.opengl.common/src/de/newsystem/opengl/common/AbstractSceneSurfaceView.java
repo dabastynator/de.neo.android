@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import de.newsystem.opengl.common.fibures.GLFigure;
 
 public class AbstractSceneSurfaceView extends GLSurfaceView {
 
@@ -11,7 +12,8 @@ public class AbstractSceneSurfaceView extends GLSurfaceView {
 	private float downX;
 	private float downY;
 
-	public AbstractSceneSurfaceView(Context context, Bundle savedInstanceState, AbstractSceneRenderer renderer) {
+	public AbstractSceneSurfaceView(Context context, Bundle savedInstanceState,
+			AbstractSceneRenderer renderer) {
 		super(context);
 
 		mRenderer = renderer;
@@ -42,4 +44,9 @@ public class AbstractSceneSurfaceView extends GLSurfaceView {
 		mRenderer.onSaveInstanceState(outState);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		GLFigure.reloadTextures();
+	}
 }

@@ -32,7 +32,7 @@ public class GLTableround extends GLFigure {
 		pillar.red = pillar.green = pillar.blue = 0;
 
 		bottom = new GLCube(style);
-		bottom.SizeX = width*0.7f;
+		bottom.SizeX = width * 0.7f;
 		bottom.SizeY = 0.2f;
 		bottom.SizeZ = 0.2f;
 		bottom.red = bottom.green = bottom.blue = 0;
@@ -46,6 +46,11 @@ public class GLTableround extends GLFigure {
 		bottom.draw(gl);
 		bottom.ancY = 90;
 		bottom.draw(gl);
+	}
+
+	@Override
+	public void setTexture(Bitmap b) {
+		setTexture(BOTTOM | PILLAR | TOP, b);
 	}
 
 	public void setTexture(int surface, Bitmap bitmap) {

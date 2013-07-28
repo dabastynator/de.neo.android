@@ -1,6 +1,8 @@
 package de.newsystem.opengl.common;
 
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -61,6 +63,14 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 */
 	protected float[] translateSceneBounds = new float[] { 5, -5, 5, -5, 0, -50 };
 
+	/**
+	 * The texture map holds all textures to avoid double loading of one
+	 * texture.
+	 */
+	protected Map<Integer, Bitmap> textureMap;
+
+	private float[] touchPositionsDown = new float[8];
+
 	protected float ancX = 70;
 	protected float ancY = 0;
 	private float div;
@@ -120,12 +130,22 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			Log.e("Figure found", "found figure: "
 					+ figure.getClass().getSimpleName() + " (" + figure.getID()
 					+ ")");
-			if (figure.getOnClickListener() != null)
-				figure.getOnClickListener().onGLClick();
-		}
+			onFigureTouched(gl, figure);
+		} else
+			onNoFigureTouched(gl);
 		GLFigure.setFigureDrawMode(GLFigure.DRAW_MODE_NORMAL);
 		if (USE_LIGHTING)
 			gl.glEnable(GL10.GL_LIGHTING);
+	}
+
+	protected void onFigureTouched(GL10 gl, GLFigure figure) {
+		if (figure.getOnClickListener() != null)
+			figure.getOnClickListener().onGLClick();
+	}
+
+	protected void onNoFigureTouched(GL10 gl) {
+		// TODO Auto-generated method stub
+
 	}
 
 	protected int getColorAtPixel(GL10 gl, int sx, int sy) {
@@ -147,6 +167,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
 		GLU.gluPerspective(gl, 45.0f, (float) width / (float) height, 0.1f,
 				100.0f);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -220,6 +241,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			return;
 		}
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			touchPositionsDown[0] = event.getX();
+			touchPositionsDown[1] = event.getY();
+			touchPositionsDown[2] = translateScene[0];
+			touchPositionsDown[3] = translateScene[1];
 			div = 0;
 		}
 	}
@@ -232,6 +257,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @return bitmap
 	 */
 	protected Bitmap loadBitmap(Resources resources, int id) {
+		if (textureMap == null)
+			textureMap = new HashMap<Integer, Bitmap>();
+		if (textureMap.containsKey(id))
+			return textureMap.get(id);
 		Matrix flip = new Matrix();
 		flip.postScale(1f, -1f);
 		BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -240,6 +269,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		Bitmap bitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
 				b.getHeight(), flip, true);
 		b.recycle();
+		textureMap.put(id, bitmap);
 		return bitmap;
 	}
 
@@ -282,6 +312,37 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		this.selectX = x;
 		this.selectY = y;
 		this.view = view;
+	}
+
+	/**
+	 * Create bitmap from current GL scene.
+	 * 
+	 * @param gl
+	 * @return bitmap
+	 */
+	protected Bitmap loadBitmapFromView(GL10 gl) {
+		int x = 0;
+		int y = 0;
+		int w = view.getWidth();
+		int h = view.getHeight();
+		int b[] = new int[w * h];
+		int bt[] = new int[w * h];
+		IntBuffer ib = IntBuffer.wrap(b);
+		ib.position(0);
+		gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, ib);
+		for (int i = 0; i < h; i++) {// remember, that OpenGL bitmap is
+										// incompatible with Android bitmap
+										// and so, some correction need.
+			for (int j = 0; j < w; j++) {
+				int pix = b[i * w + j];
+				int pb = (pix >> 16) & 0xff;
+				int pr = (pix << 16) & 0x00ff0000;
+				int pix1 = (pix & 0xff00ff00) | pr | pb;
+				bt[(h - i - 1) * w + j] = pix1;
+			}
+		}
+		Bitmap sb = Bitmap.createBitmap(bt, w, h, Bitmap.Config.ARGB_8888);
+		return sb;
 	}
 
 }

@@ -25,9 +25,9 @@ public class GLFloorlamp extends GLLight {
 		bottom.SizeY = 0.2f;
 		bottom.SizeX = bottom.SizeZ = light.SizeX = light.SizeZ = 0.5f;
 		bottom.y = 0.1f;
-		light.SizeY = 2.6f;
+		light.SizeY = 2f;
 
-		light.y = 2f;
+		light.y = 0.7f + light.SizeY / 2;
 
 		bottom.red = bottom.green = bottom.blue = pillar.red = pillar.green = pillar.blue = 0.3f;
 		setLight(true);

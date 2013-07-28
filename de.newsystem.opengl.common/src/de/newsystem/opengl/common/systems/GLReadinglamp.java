@@ -14,15 +14,15 @@ public class GLReadinglamp extends GLLight {
 
 	public GLReadinglamp(int style) {
 		super(style);
-		bottom = new GLBall(style, 10);
+		bottom = new GLBall(style, 20);
 		bottom.y = 0.5f;
 
-		top = new GLCylinder(15, 0.3f, 0.6f, style);
+		top = new GLCylinder(20, 0.3f, 0.6f, style);
 		top.ancX = -90;
 		top.y = 1.2f;
 		top.SizeZ = 0.8f;
 
-		light = new GLBall(style, 7);
+		light = new GLBall(style, 15);
 		light.y = 1.2f;
 		light.SizeX = light.SizeY = light.SizeZ = 0.3f;
 
