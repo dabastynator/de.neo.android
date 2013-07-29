@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.content.res.Resources;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -69,8 +69,6 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 */
 	protected Map<Integer, Bitmap> textureMap;
 
-	private float[] touchPositionsDown = new float[8];
-
 	protected float ancX = 70;
 	protected float ancY = 0;
 	private float div;
@@ -80,11 +78,14 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	private int selectY;
 	private View view;
 
+	protected Context context;
+
 	/**
 	 * allocate new abstract scene renderer.
 	 */
-	public AbstractSceneRenderer(Resources resources) {
-		scene = createScene(resources);
+	public AbstractSceneRenderer(Context context) {
+		this.context = context;
+		scene = createScene();
 	}
 
 	/**
@@ -92,7 +93,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * 
 	 * @return scene
 	 */
-	protected abstract GLFigure createScene(Resources resources);
+	protected abstract GLFigure createScene();
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
@@ -241,10 +242,6 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			return;
 		}
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			touchPositionsDown[0] = event.getX();
-			touchPositionsDown[1] = event.getY();
-			touchPositionsDown[2] = translateScene[0];
-			touchPositionsDown[3] = translateScene[1];
 			div = 0;
 		}
 	}
@@ -256,7 +253,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @param id
 	 * @return bitmap
 	 */
-	protected Bitmap loadBitmap(Resources resources, int id) {
+	protected Bitmap loadBitmap(int id) {
 		if (textureMap == null)
 			textureMap = new HashMap<Integer, Bitmap>();
 		if (textureMap.containsKey(id))
@@ -265,7 +262,8 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		flip.postScale(1f, -1f);
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		Bitmap b = BitmapFactory.decodeResource(resources, id, opts);
+		Bitmap b = BitmapFactory.decodeResource(context.getResources(), id,
+				opts);
 		Bitmap bitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
 				b.getHeight(), flip, true);
 		b.recycle();

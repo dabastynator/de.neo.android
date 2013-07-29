@@ -25,11 +25,12 @@ public class GLFlatScreen extends GLFigure {
 		screen.SizeY = screenHeigh;
 		screen.y = height - screenHeigh / 2;
 		screen.red = screen.green = screen.blue = 0;
+		screen.ancX = 180;
 
 		bottom = new GLSquare(style);
 		bottom.SizeX = screenWidth * 0.5f;
 		bottom.SizeY = screenHeigh * 0.5f;
-		bottom.ancX = 90;
+		bottom.ancX = -90;
 		bottom.red = bottom.green = bottom.blue = 0.3f;
 
 		pillar = new GLCube(style);
