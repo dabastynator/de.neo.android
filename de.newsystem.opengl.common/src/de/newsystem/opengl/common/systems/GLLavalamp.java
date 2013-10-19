@@ -3,10 +3,9 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import de.newsystem.opengl.common.fibures.GLCircle;
-import de.newsystem.opengl.common.fibures.GLFigure;
 import de.newsystem.opengl.common.fibures.GLFunctionFigure;
 
-public class GLLavalamp extends GLLight {
+public class GLLavalamp extends GLSwitch{
 
 	private GLFunctionFigure function;
 	private GLCircle top;
@@ -30,15 +29,15 @@ public class GLLavalamp extends GLLight {
 		top.ancZ = ((float) 0) / (parts);
 		bottom.ancX = 90;
 		//
-		setLight(true);
+		setSwitch(true);
 		bottom.red = bottom.green = bottom.blue = 0.2f;
 
 		SizeY = 1f;
 		SizeX = SizeZ = 0.4f;
 	}
 
-	public void setLight(boolean b) {
-		super.setLight(b);
+	public void setSwitch(boolean b) {
+		super.setSwitch(b);
 		if (b) {
 			function.red = top.red = 1f;
 			function.green = function.blue = top.green = top.blue = 0.4f;
@@ -58,7 +57,6 @@ public class GLLavalamp extends GLLight {
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		super.onDraw(gl);
 		function.draw(gl);
 		top.draw(gl);
 		bottom.draw(gl);

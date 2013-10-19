@@ -4,9 +4,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import de.newsystem.opengl.common.fibures.GLBall;
 import de.newsystem.opengl.common.fibures.GLCylinder;
-import de.newsystem.opengl.common.fibures.GLFigure;
 
-public class GLReadinglamp extends GLLight {
+public class GLReadinglamp extends GLSwitch {
 
 	private GLBall bottom;
 	private GLCylinder top;
@@ -26,14 +25,14 @@ public class GLReadinglamp extends GLLight {
 		light.y = 1.2f;
 		light.SizeX = light.SizeY = light.SizeZ = 0.3f;
 
-		setLight(true);
+		setSwitch(true);
 
 		SizeX = SizeY = SizeZ = 0.5f;
 	}
 
 	@Override
-	public void setLight(boolean on) {
-		super.setLight(on);
+	public void setSwitch(boolean on) {
+		super.setSwitch(on);
 		if (on) {
 			bottom.red = bottom.green = bottom.blue = 0.8f;
 			top.red = top.green = top.blue = 0.9f;
@@ -49,7 +48,6 @@ public class GLReadinglamp extends GLLight {
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		super.onDraw(gl);
 		bottom.draw(gl);
 		light.draw(gl);
 		gl.glDisable(GL10.GL_CULL_FACE);
@@ -63,5 +61,4 @@ public class GLReadinglamp extends GLLight {
 		top.setOnClickListener(listener);
 		light.setOnClickListener(listener);
 	}
-
 }

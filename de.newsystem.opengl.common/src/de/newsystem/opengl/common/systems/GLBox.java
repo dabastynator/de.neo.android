@@ -85,4 +85,14 @@ public class GLBox extends GLFigure {
 		this.volume = volume;
 	}
 
+	public void setBrightness(int surface, float brightness) {
+		if ((surface & BOX) != 0) {
+			plate.red = plate.green = plate.blue = brightness;
+			cube.red = cube.green = cube.blue = brightness;
+		}
+		if ((surface & SPEAKER) != 0) {
+			speaker.red = speaker.green = speaker.blue = brightness;
+		}		
+	}
+
 }

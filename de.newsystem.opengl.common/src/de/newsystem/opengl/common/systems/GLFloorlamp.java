@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import de.newsystem.opengl.common.fibures.GLCube;
 import de.newsystem.opengl.common.fibures.GLCylinder;
 
-public class GLFloorlamp extends GLLight {
+public class GLFloorlamp extends GLSwitch {
 
 	public static final int BOTTOM = 1;
 	public static final int PILLAR = 2;
@@ -15,7 +15,7 @@ public class GLFloorlamp extends GLLight {
 	public GLCube bottom;
 	public GLCube light;
 	public GLCylinder pillar;
-
+	
 	public GLFloorlamp(int style) {
 		super(style);
 		bottom = new GLCube(style);
@@ -30,7 +30,7 @@ public class GLFloorlamp extends GLLight {
 		light.y = 0.7f + light.SizeY / 2;
 
 		bottom.red = bottom.green = bottom.blue = pillar.red = pillar.green = pillar.blue = 0.3f;
-		setLight(true);
+		setSwitch(true);
 
 		pillar.ancX = 90;
 		pillar.y = 0.5f;
@@ -55,14 +55,13 @@ public class GLFloorlamp extends GLLight {
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		super.onDraw(gl);
 		bottom.draw(gl);
 		light.draw(gl);
 		pillar.draw(gl);
 	}
 
-	public void setLight(boolean _light) {
-		super.setLight(_light);
+	public void setSwitch(boolean _light) {
+		super.setSwitch(_light);
 		if (_light) {
 			light.setColor(1, 1, 0.3f);
 		} else {

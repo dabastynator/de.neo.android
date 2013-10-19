@@ -3,18 +3,18 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.fibures.GLFigure;
 
-public class GLMediaServer extends GLFigure {
+public class GLMediaServer extends GLSwitch {
 
 	private GLBox box;
 	private GLFlatScreen screen;
 	private boolean isPlaying;
 
-	public GLMediaServer(int style) {
+	public GLMediaServer(int style, boolean hasScreen) {
 		super(style);
 		box = new GLBox(style);
-		screen = new GLFlatScreen(style, 1.2f, 0.67f, 2f);
+		if (hasScreen)
+			screen = new GLFlatScreen(style, 1.2f, 0.67f, 2f);
 		setPlaying(true);
 	}
 
@@ -24,14 +24,16 @@ public class GLMediaServer extends GLFigure {
 		box.draw(gl);
 		box.x = 0.8f;
 		box.draw(gl);
-		screen.draw(gl);
+		if (screen != null)
+			screen.draw(gl);
 	}
 
 	@Override
 	public void setOnClickListener(GLClickListener listener) {
 		super.setOnClickListener(listener);
 		box.setOnClickListener(listener);
-		screen.setOnClickListener(listener);
+		if (screen != null)
+			screen.setOnClickListener(listener);
 	}
 
 	public boolean isPlaying() {
@@ -43,10 +45,20 @@ public class GLMediaServer extends GLFigure {
 		if (!isPlaying)
 			box.setVolume(50);
 	}
+	
+	@Override
+	public void setSwitch(boolean on) {
+		super.setSwitch(on);
+		if (on)
+			box.setBrightness(GLBox.BOX, 1);
+		else
+			box.setBrightness(GLBox.BOX, 0.4f);
+	}
 
 	public void setTexture(int surface, Bitmap bitmap, float brightness) {
 		box.setTexture(surface, bitmap, brightness);
-		screen.setTexture(surface, bitmap);
+		if (screen != null)
+			screen.setTexture(surface, bitmap);
 	}
 
 }

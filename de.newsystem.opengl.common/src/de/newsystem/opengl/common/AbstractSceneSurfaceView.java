@@ -31,8 +31,8 @@ public class AbstractSceneSurfaceView extends GLSurfaceView {
 			downY = event.getY();
 		}
 		if (event.getAction() == MotionEvent.ACTION_UP) {
-			if ((Math.abs(event.getX() - downX) < 4)
-					&& (Math.abs(event.getY() - downY) < 4)) {
+			if ((Math.abs(event.getX() - downX) < 8)
+					&& (Math.abs(event.getY() - downY) < 8)) {
 				mRenderer.selectFigure((int) event.getX(), (int) event.getY(),
 						this);
 			}
