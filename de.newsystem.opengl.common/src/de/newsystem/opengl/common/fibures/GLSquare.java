@@ -71,4 +71,18 @@ public class GLSquare extends GLFigure {
 
 		mTextureBuffer = allocate(texCoordinates);
 	}
+
+	public void setTexture(Bitmap b, float scaleX, float scaleY) {
+		super.setTexture(b);
+		float texCoordinates[] = new float[textureCoordinates.length];
+
+		for (int i = 0; i < textureCoordinates.length; i++) {
+			if (i % 2 == 0)
+				texCoordinates[i] = scaleX * textureCoordinates[i];
+			else
+				texCoordinates[i] = scaleY * textureCoordinates[i];
+		}
+
+		mTextureBuffer = allocate(texCoordinates);
+	}
 }

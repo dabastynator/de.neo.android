@@ -11,9 +11,11 @@ public class GLPolynom extends GLFigure {
 	private FloatBuffer vertexBuffer;
 	private ShortBuffer indexBuffer;
 	private short[] indices;
+	private int lineWidth;
 
-	public GLPolynom(List<GLPoint> points) {
+	public GLPolynom(List<GLPoint> points, int lineWidth) {
 		super(GRID);
+		this.lineWidth = lineWidth;
 		float[] vertices = new float[points.size() * 3 + 3];
 		for (int i = 0; i <= points.size(); i++) {
 			GLPoint point = points.get(i % points.size());
@@ -35,6 +37,7 @@ public class GLPolynom extends GLFigure {
 
 	@Override
 	protected void onDraw(GL10 gl) {
+		gl.glLineWidth(lineWidth);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 
