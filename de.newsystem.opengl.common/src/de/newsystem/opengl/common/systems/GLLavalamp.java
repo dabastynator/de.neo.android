@@ -21,29 +21,29 @@ public class GLLavalamp extends GLSwitch{
 		function = new GLFunctionFigure(parts, style, f);
 		top = new GLCircle(parts, style);
 		bottom = new GLCircle(parts, style);
-		top.SizeX = top.SizeY = f.getValue(1);
-		top.y = 1;
-		bottom.SizeX = bottom.SizeY = f.getValue(0);
-		bottom.y = 0;
+		top.size[0] = top.size[1] = f.getValue(1);
+		top.position[1] = 1;
+		bottom.size[0] = bottom.size[1] = f.getValue(0);
+		bottom.position[1] = 0;
 		top.ancX = -90;
 		top.ancZ = ((float) 0) / (parts);
 		bottom.ancX = 90;
 		//
 		setSwitch(true);
-		bottom.red = bottom.green = bottom.blue = 0.2f;
+		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.2f;
 
-		SizeY = 1f;
-		SizeX = SizeZ = 0.4f;
+		size[1] = 1f;
+		size[0] = size[2] = 0.4f;
 	}
 
 	public void setSwitch(boolean b) {
 		super.setSwitch(b);
 		if (b) {
-			function.red = top.red = 1f;
-			function.green = function.blue = top.green = top.blue = 0.4f;
+			function.color[0] = top.color[0] = 1f;
+			function.color[1] = function.color[2] = top.color[1] = top.color[2] = 0.4f;
 		} else {
-			function.red = top.red = 0.4f;
-			function.green = function.blue = top.green = top.blue = 0;
+			function.color[0] = top.color[0] = 0.4f;
+			function.color[1] = function.color[2] = top.color[1] = top.color[2] = 0;
 		}
 	}
 

@@ -49,12 +49,12 @@ public class GLTorus extends GLFigure {
 
 		vertexBuffer = allocate(vertex);
 
-		if (style == GRID) {
+		if (style == STYLE_GRID) {
 			makeGridIndices();
 			paintStyle = GL10.GL_LINE_STRIP;
 		}
 
-		if (style == PLANE) {
+		if (style == STYLE_PLANE) {
 			makePlaneIndices();
 			paintStyle = GL10.GL_TRIANGLES;
 		}

@@ -20,9 +20,9 @@ public class GLMediaServer extends GLSwitch {
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		box.x = -0.8f;
+		box.position[0] = -0.8f;
 		box.draw(gl);
-		box.x = 0.8f;
+		box.position[0] = 0.8f;
 		box.draw(gl);
 		if (screen != null)
 			screen.draw(gl);

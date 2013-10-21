@@ -35,32 +35,32 @@ public class GLCylinderClosed extends GLFigure {
 		}
 		if ((surfaces & BACK) != 0) {
 			circleBack = new GLCircle(parts, style);
-			circleBack.SizeX = circleBack.SizeY = radiusBack;
+			circleBack.size[0] = circleBack.size[1] = radiusBack;
 			circleBack.ancY = 180;
-			circleBack.z = -0.5f;
+			circleBack.position[2] = -0.5f;
 		}
 		if ((surfaces & FRONT) != 0) {
 			circleFront = new GLCircle(parts, style);
-			circleFront.SizeX = circleFront.SizeY = radiusFront;
-			circleFront.z = 0.5f;
+			circleFront.size[0] = circleFront.size[1] = radiusFront;
+			circleFront.position[2] = 0.5f;
 		}
 	}
 
 	public void setColor(int surface, float red, float green, float blue) {
 		if ((surface & CYLINDER) != 0) {
-			cylinder.red = red;
-			cylinder.green = green;
-			cylinder.blue = blue;
+			cylinder.color[0] = red;
+			cylinder.color[1] = green;
+			cylinder.color[2] = blue;
 		}
 		if ((surface & BACK) != 0) {
-			circleBack.red = red;
-			circleBack.green = green;
-			circleBack.blue = blue;
+			circleBack.color[0] = red;
+			circleBack.color[1] = green;
+			circleBack.color[2] = blue;
 		}
 		if ((surface & FRONT) != 0) {
-			circleFront.red = red;
-			circleFront.green = green;
-			circleFront.blue = blue;
+			circleFront.color[0] = red;
+			circleFront.color[1] = green;
+			circleFront.color[2] = blue;
 		}
 	}
 	

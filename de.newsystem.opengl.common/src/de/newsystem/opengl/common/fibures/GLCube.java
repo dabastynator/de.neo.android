@@ -33,41 +33,41 @@ public class GLCube extends GLFigure {
 		if ((surface & BACK) != 0) {
 			squares[0] = new GLSquare(style);
 			squares[0].style = style;
-			squares[0].z = -0.5f;
+			squares[0].position[2] = -0.5f;
 		}
 
 		if ((surface & FRONT) != 0) {
 			squares[1] = new GLSquare(style);
 			squares[1].style = style;
-			squares[1].z = 0.5f;
+			squares[1].position[2] = 0.5f;
 			squares[1].ancX = 180;
 		}
 
 		if ((surface & RIGHT) != 0) {
 			squares[2] = new GLSquare(style);
 			squares[2].style = style;
-			squares[2].x = 0.5f;
+			squares[2].position[0] = 0.5f;
 			squares[2].ancY = -90;
 		}
 
 		if ((surface & LEFT) != 0) {
 			squares[3] = new GLSquare(style);
 			squares[3].style = style;
-			squares[3].x = -0.5f;
+			squares[3].position[0] = -0.5f;
 			squares[3].ancY = 90;
 		}
 
 		if ((surface & TOP) != 0) {
 			squares[4] = new GLSquare(style);
 			squares[4].style = style;
-			squares[4].y = 0.5f;
+			squares[4].position[1] = 0.5f;
 			squares[4].ancX = 90;
 		}
 
 		if ((surface & DOWN) != 0) {
 			squares[5] = new GLSquare(style);
 			squares[5].style = style;
-			squares[5].y = -0.5f;
+			squares[5].position[1] = -0.5f;
 			squares[5].ancX = -90;
 		}
 	}
@@ -129,9 +129,9 @@ public class GLCube extends GLFigure {
 	public void setColor(float red, float green, float blue) {
 		for (int i = 0; i < squares.length; i++) {
 			if (squares[i] != null) {
-				squares[i].red = red;
-				squares[i].green = green;
-				squares[i].blue = blue;
+				squares[i].color[0] = red;
+				squares[i].color[1] = green;
+				squares[i].color[2] = blue;
 			}
 		}
 	}

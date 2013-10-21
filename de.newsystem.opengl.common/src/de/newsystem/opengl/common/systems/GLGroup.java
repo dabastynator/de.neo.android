@@ -18,7 +18,7 @@ public class GLGroup extends GLFigure {
 	private List<GLFigure> children;
 
 	public GLGroup() {
-		super(PLANE);
+		super(STYLE_PLANE);
 		children = Collections.synchronizedList(new ArrayList<GLFigure>());
 	}
 

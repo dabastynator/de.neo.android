@@ -22,19 +22,19 @@ public class GLFloorlamp extends GLSwitch {
 		light = new GLCube(style);
 		pillar = new GLCylinder(7, 0.2f, 0.2f, style);
 
-		bottom.SizeY = 0.2f;
-		bottom.SizeX = bottom.SizeZ = light.SizeX = light.SizeZ = 0.5f;
-		bottom.y = 0.1f;
-		light.SizeY = 2f;
+		bottom.size[1] = 0.2f;
+		bottom.size[0] = bottom.size[2] = light.size[0] = light.size[2] = 0.5f;
+		bottom.position[1] = 0.1f;
+		light.size[1] = 2f;
 
-		light.y = 0.7f + light.SizeY / 2;
+		light.position[1] = 0.7f + light.size[1] / 2;
 
-		bottom.red = bottom.green = bottom.blue = pillar.red = pillar.green = pillar.blue = 0.3f;
+		bottom.color[0] = bottom.color[1] = bottom.color[2] = pillar.color[0] = pillar.color[1] = pillar.color[2] = 0.3f;
 		setSwitch(true);
 
 		pillar.ancX = 90;
-		pillar.y = 0.5f;
-		pillar.SizeX = pillar.SizeY = 0.4f;
+		pillar.position[1] = 0.5f;
+		pillar.size[0] = pillar.size[1] = 0.4f;
 
 	}
 
@@ -45,7 +45,7 @@ public class GLFloorlamp extends GLSwitch {
 		}
 		if ((surface & PILLAR) != 0) {
 			pillar.setTexture(b);
-			pillar.red = pillar.green = pillar.blue = 1;
+			pillar.color[0] = pillar.color[1] = pillar.color[2] = 1;
 		}
 		if ((surface & LIGHT) != 0) {
 			light.setTexture(b);

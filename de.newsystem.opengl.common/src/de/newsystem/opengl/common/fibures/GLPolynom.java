@@ -14,7 +14,7 @@ public class GLPolynom extends GLFigure {
 	private int lineWidth;
 
 	public GLPolynom(List<GLPoint> points, int lineWidth) {
-		super(GRID);
+		super(STYLE_GRID);
 		this.lineWidth = lineWidth;
 		float[] vertices = new float[points.size() * 3 + 3];
 		for (int i = 0; i <= points.size(); i++) {
@@ -32,7 +32,7 @@ public class GLPolynom extends GLFigure {
 
 		indexBuffer = allocate(indices);
 
-		red = green = blue = 0;
+		color[0] = color[1] = color[2] = 0;
 	}
 
 	@Override

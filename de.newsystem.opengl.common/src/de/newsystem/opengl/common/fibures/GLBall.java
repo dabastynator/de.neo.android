@@ -37,7 +37,7 @@ public class GLBall extends GLFigure {
 		vertexBuffer = allocate(vertices);
 		textureBuffer = allocate(texture);
 
-		if (style == GRID)
+		if (style == STYLE_GRID)
 			createGridIndices(slices);
 		else
 			createPlaneIndices(slices);

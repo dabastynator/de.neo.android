@@ -16,7 +16,7 @@ public class GLBoxplate extends GLFigure {
 	private int drawStyle;
 
 	public GLBoxplate(int parts, float y1, float r1, float y2, float r2) {
-		super(GLFigure.PLANE);
+		super(GLFigure.STYLE_PLANE);
 		vertex = new float[(2 * parts + 6) * 3];
 		float steps = (float) ((Math.PI * 2) / (parts));
 

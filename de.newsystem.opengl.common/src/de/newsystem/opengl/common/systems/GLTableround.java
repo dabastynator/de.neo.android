@@ -19,23 +19,23 @@ public class GLTableround extends GLFigure {
 	public GLTableround(int style, float height, float width) {
 		super(style);
 		cylinder = new GLCylinderClosed(30, style);
-		cylinder.SizeZ = 0.1f;
-		cylinder.SizeX = cylinder.SizeY = width;
+		cylinder.size[2] = 0.1f;
+		cylinder.size[0] = cylinder.size[1] = width;
 		cylinder.ancX = 90;
-		cylinder.y = height;
+		cylinder.position[1] = height;
 		cylinder.setColor(0.5f, 0.5f, 0.5f);
 
 		pillar = new GLCube(style);
-		pillar.SizeX = pillar.SizeZ = 0.1f;
-		pillar.SizeY = cylinder.y;
-		pillar.y = pillar.SizeY / 2;
-		pillar.red = pillar.green = pillar.blue = 0;
+		pillar.size[0] = pillar.size[2] = 0.1f;
+		pillar.size[1] = cylinder.position[1];
+		pillar.position[1] = pillar.size[1] / 2;
+		pillar.color[0] = pillar.color[1] = pillar.color[2] = 0;
 
 		bottom = new GLCube(style);
-		bottom.SizeX = width * 0.7f;
-		bottom.SizeY = 0.2f;
-		bottom.SizeZ = 0.2f;
-		bottom.red = bottom.green = bottom.blue = 0;
+		bottom.size[0] = width * 0.7f;
+		bottom.size[1] = 0.2f;
+		bottom.size[2] = 0.2f;
+		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0;
 	}
 
 	@Override

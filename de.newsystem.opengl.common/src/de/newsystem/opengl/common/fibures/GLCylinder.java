@@ -21,7 +21,7 @@ public class GLCylinder extends GLFigure {
 	 * @param parts
 	 */
 	public GLCylinder(int parts) {
-		this(parts, GRID);
+		this(parts, STYLE_GRID);
 	}
 
 	public GLCylinder(int parts, int style) {
@@ -57,7 +57,7 @@ public class GLCylinder extends GLFigure {
 		vertex[parts * 6 + 10] = 0;
 		vertex[parts * 6 + 11] = 0.5f;
 
-		if (style == GRID)
+		if (style == STYLE_GRID)
 			createGridIndices(parts);
 		else
 			createPlaneIndices(parts);
@@ -83,7 +83,6 @@ public class GLCylinder extends GLFigure {
 		}
 
 		textureCoordinates = new float[parts * 4 + 4];
-		float steps = (float) ((Math.PI * 2) / parts);
 		for (int i = 0; i <= parts; i++) {
 			// Textur für den Mantel
 			textureCoordinates[i * 2] = ((float) parts - i) / parts;

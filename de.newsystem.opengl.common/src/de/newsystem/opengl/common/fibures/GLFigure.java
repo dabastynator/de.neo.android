@@ -31,20 +31,28 @@ public abstract class GLFigure {
 	/**
 	 * Paint object as grid
 	 */
-	public static final int GRID = 1;
+	public static final int STYLE_GRID = 1;
 
 	/**
 	 * Paint object as solid plane
 	 */
-	public static final int PLANE = 2;
+	public static final int STYLE_PLANE = 2;
+	
+	/**
+	 * Normal render mode
+	 */
+	public static final int DRAW_MODE_NORMAL = 0;
+	
+	/**
+	 * Render id color for picking figures 
+	 */
+	public static final int DRAW_MODE_PICK_ID = 1;
 
 	/**
 	 * Counter for ids.
 	 */
 	private static int ID_COUNTER = 1;
 
-	public static final int DRAW_MODE_NORMAL = 0;
-	public static final int DRAW_MODE_PICK_ID = 1;
 
 	protected static List<GLFigure> allFigures = new ArrayList<GLFigure>();
 
@@ -61,12 +69,12 @@ public abstract class GLFigure {
 	/**
 	 * Position
 	 */
-	public float x, y, z;
+	public float[] position = {0,0,0};
 
 	/**
 	 * Size
 	 */
-	public float SizeX, SizeY, SizeZ;
+	public float[] size = {1, 1, 1};
 
 	/**
 	 * Angle
@@ -76,7 +84,7 @@ public abstract class GLFigure {
 	/**
 	 * Color
 	 */
-	public float red, green, blue, alpha = 1;
+	public float[] color = {1, 1, 1, 1};
 
 	/**
 	 * Textrue
@@ -101,9 +109,6 @@ public abstract class GLFigure {
 	 * allocate new gl figure, it will be registered in a list of all figures.
 	 */
 	public GLFigure(int style) {
-		SizeX = 1;
-		SizeY = 1;
-		SizeZ = 1;
 		this.style = style;
 		allFigures.add(this);
 	}
@@ -115,7 +120,7 @@ public abstract class GLFigure {
 	 */
 	public final void draw(GL10 gl) {
 
-		if (draw_mode == DRAW_MODE_PICK_ID && style == GRID)
+		if (draw_mode == DRAW_MODE_PICK_ID && style == STYLE_GRID)
 			return;
 
 		// Eigene Matrix für Figur
@@ -125,7 +130,7 @@ public abstract class GLFigure {
 		if (texture != null && draw_mode == DRAW_MODE_NORMAL)
 			setTexture(gl);
 		if (draw_mode == DRAW_MODE_NORMAL)
-			gl.glColor4f(red, green, blue, alpha);
+			gl.glColor4f(color[0], color[1], color[2], color[3]);
 		else {
 			float r = ((float) id % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
 			float g = ((float) (id / IDS_PER_COLOR) % IDS_PER_COLOR)
@@ -142,11 +147,11 @@ public abstract class GLFigure {
 		}
 
 		// Figur positionieren
-		gl.glTranslatef(x, y, z);
+		gl.glTranslatef(position[0], position[1], position[2]);
 		gl.glRotatef(ancX, 1, 0, 0);
 		gl.glRotatef(ancY, 0, 1, 0);
 		gl.glRotatef(ancZ, 0, 0, 1);
-		gl.glScalef(SizeX, SizeY, SizeZ);
+		gl.glScalef(size[0], size[1], size[2]);
 
 		// Figur zeichnen
 		onDraw(gl);

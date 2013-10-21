@@ -22,21 +22,21 @@ public class GLBox extends GLFigure {
 		super(style);
 		cube = new GLCube(style, GLCube.LEFT | GLCube.RIGHT | GLCube.TOP
 				| GLCube.DOWN | GLCube.BACK);
-		cube.SizeX = cube.SizeZ = 0.5f;
-		cube.y = 0.5f;
+		cube.size[0] = cube.size[2] = 0.5f;
+		cube.position[1] = 0.5f;
 
 		plate = new GLBoxplate(Parts, 0.25f, 0.2f, 0.75f, 0.125f);
-		plate.z = 0.25f;
-		plate.red = cube.red = 0.37f;
-		plate.green = cube.green = 0.28f;
-		plate.blue = cube.blue = 0.03f;
+		plate.position[2] = 0.25f;
+		plate.color[0] = cube.color[0] = 0.37f;
+		plate.color[1] = cube.color[1] = 0.28f;
+		plate.color[2] = cube.color[2] = 0.03f;
 
 		speaker = new GLCylinderClosed(Parts, style, GLCylinderClosed.BACK
 				| GLCylinderClosed.CYLINDER, 0.5f, 0.2f);
 		speaker.setColor(GLCylinderClosed.BACK, 0.5f, 0.5f, 0.5f);
 		speaker.setColor(GLCylinderClosed.CYLINDER, 0.1f, 0.1f, 0.1f);
-		speaker.SizeZ = 0.05f;
-		speaker.z = cube.SizeZ / 2 - speaker.SizeZ / 2;
+		speaker.size[2] = 0.05f;
+		speaker.position[2] = cube.size[2] / 2 - speaker.size[2] / 2;
 		setVolume(50);
 	}
 
@@ -46,13 +46,13 @@ public class GLBox extends GLFigure {
 		cube.draw(gl);
 		plate.draw(gl);
 		gl.glDisable(GL10.GL_CULL_FACE);
-		speaker.y = 0.25f;
-		speaker.SizeZ = 0.05f + (volume / 100 - 0.5f) * 0.1f;
-		speaker.z = cube.SizeZ / 2 - speaker.SizeZ / 2;
-		speaker.SizeX = speaker.SizeY = 0.4f;
+		speaker.position[1] = 0.25f;
+		speaker.size[2] = 0.05f + (volume / 100 - 0.5f) * 0.1f;
+		speaker.position[2] = cube.size[2] / 2 - speaker.size[2] / 2;
+		speaker.size[0] = speaker.size[1] = 0.4f;
 		speaker.draw(gl);
-		speaker.SizeX = speaker.SizeY = 0.25f;
-		speaker.y = 0.75f;
+		speaker.size[0] = speaker.size[1] = 0.25f;
+		speaker.position[1] = 0.75f;
 		speaker.draw(gl);
 	}
 
@@ -62,11 +62,11 @@ public class GLBox extends GLFigure {
 					| GLCube.DOWN | GLCube.BACK, b);
 			cube.setColor(brightness, brightness, brightness);
 			plate.setTexture(b);
-			plate.red = plate.green = plate.blue = brightness;
+			plate.color[0] = plate.color[1] = plate.color[2] = brightness;
 		}
 		if ((surface & SPEAKER) != 0) {
 			speaker.setTexture(GLCylinderClosed.CYLINDER, b);
-			speaker.red = speaker.green = speaker.blue = 1;
+			speaker.color[0] = speaker.color[1] = speaker.color[2] = 1;
 		}
 	}
 
@@ -87,11 +87,11 @@ public class GLBox extends GLFigure {
 
 	public void setBrightness(int surface, float brightness) {
 		if ((surface & BOX) != 0) {
-			plate.red = plate.green = plate.blue = brightness;
+			plate.color[0] = plate.color[1] = plate.color[2] = brightness;
 			cube.setColor(brightness, brightness, brightness);
 		}
 		if ((surface & SPEAKER) != 0) {
-			speaker.red = speaker.green = speaker.blue = brightness;
+			speaker.color[0] = speaker.color[1] = speaker.color[2] = brightness;
 			speaker.setColor(GLCylinderClosed.BACK | GLCylinderClosed.CYLINDER,
 					brightness, brightness, brightness);
 		}

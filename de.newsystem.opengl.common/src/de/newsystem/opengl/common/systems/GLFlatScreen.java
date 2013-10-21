@@ -41,25 +41,25 @@ public class GLFlatScreen extends GLSwitch {
 	}
 
 	private void initPillar() {
-		pillar.SizeX = pillar.SizeZ = 0.1f;
-		pillar.z = -pillar.SizeX / 2 - 0.01f;
-		pillar.SizeY = screen.y;
-		pillar.y = pillar.SizeY / 2;
-		pillar.red = pillar.green = pillar.blue = bottom.red;
+		pillar.size[0] = pillar.size[2] = 0.1f;
+		pillar.position[2] = -pillar.size[0] / 2 - 0.01f;
+		pillar.size[1] = screen.position[1];
+		pillar.position[1] = pillar.size[1] / 2;
+		pillar.setColor(bottom.color[0], bottom.color[1], bottom.color[2]);
 	}
 
 	private void initBottom() {
-		bottom.SizeX = screenWidth * 0.5f;
-		bottom.SizeY = screenHeigh * 0.5f;
+		bottom.size[0] = screenWidth * 0.5f;
+		bottom.size[1] = screenHeigh * 0.5f;
 		bottom.ancX = -90;
-		bottom.red = bottom.green = bottom.blue = 0.3f;
+		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.3f;
 	}
 
 	private void initScreen() {
-		screen.SizeX = screenWidth;
-		screen.SizeY = screenHeigh;
-		screen.y = height - screenHeigh / 2;
-		screen.red = screen.green = screen.blue = 0;
+		screen.size[0] = screenWidth;
+		screen.size[1] = screenHeigh;
+		screen.position[1] = height - screenHeigh / 2;
+		screen.color[0] = screen.color[1] = screen.color[2] = 0;
 		screen.ancX = 180;
 	}
 
@@ -106,14 +106,14 @@ public class GLFlatScreen extends GLSwitch {
 		if ((surface & SCREEN) != 0) {
 			screen.setTexture(b);
 			if (b != null)
-				screen.red = screen.green = screen.blue = 1;
+				screen.color[0] = screen.color[1] = screen.color[2] = 1;
 			else
 				initScreen();
 		}
 		if ((surface & BOTTOM) != 0) {
 			bottom.setTexture(b);
 			if (b != null)
-				bottom.red = bottom.green = bottom.blue = 1;
+				bottom.color[0] = bottom.color[1] = bottom.color[2] = 1;
 			else
 				initBottom();
 		}

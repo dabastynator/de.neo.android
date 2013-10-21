@@ -16,7 +16,7 @@ public class GLCircle extends GLFigure {
 	private int drawStyle;
 
 	public GLCircle(int parts) {
-		this(parts, GRID);
+		this(parts, STYLE_GRID);
 	}
 
 	public GLCircle(int parts, int style) {
@@ -37,7 +37,7 @@ public class GLCircle extends GLFigure {
 		vertex[parts * 3 + 1] = 0;
 		vertex[parts * 3 + 2] = 0;
 
-		if (style == GRID)
+		if (style == STYLE_GRID)
 			createGridIndices(parts);
 		else
 			createPlaneIndices(parts);

@@ -14,34 +14,34 @@ public class GLReadinglamp extends GLSwitch {
 	public GLReadinglamp(int style) {
 		super(style);
 		bottom = new GLBall(style, 20);
-		bottom.y = 0.5f;
+		bottom.position[1] = 0.5f;
 
 		top = new GLCylinder(20, 0.3f, 0.6f, style);
 		top.ancX = -90;
-		top.y = 1.2f;
-		top.SizeZ = 0.8f;
+		top.position[1] = 1.2f;
+		top.size[2] = 0.8f;
 
 		light = new GLBall(style, 15);
-		light.y = 1.2f;
-		light.SizeX = light.SizeY = light.SizeZ = 0.3f;
+		light.position[1] = 1.2f;
+		light.size[0] = light.size[1] = light.size[2] = 0.3f;
 
 		setSwitch(true);
 
-		SizeX = SizeY = SizeZ = 0.5f;
+		size[0] = size[1] = size[2] = 0.5f;
 	}
 
 	@Override
 	public void setSwitch(boolean on) {
 		super.setSwitch(on);
 		if (on) {
-			bottom.red = bottom.green = bottom.blue = 0.8f;
-			top.red = top.green = top.blue = 0.9f;
-			light.red = light.green = 1;
-			light.blue = 0.7f;
+			bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.8f;
+			top.color[0] = top.color[1] = top.color[2] = 0.9f;
+			light.color[0] = light.color[1] = 1;
+			light.color[2] = 0.7f;
 		} else {
-			bottom.red = bottom.green = bottom.blue = 0.6f;
-			light.red = light.green = light.blue = 0.7f;
-			top.red = top.green = top.blue = 0.7f;
+			bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.6f;
+			light.color[0] = light.color[1] = light.color[2] = 0.7f;
+			top.color[0] = top.color[1] = top.color[2] = 0.7f;
 		}
 
 	}

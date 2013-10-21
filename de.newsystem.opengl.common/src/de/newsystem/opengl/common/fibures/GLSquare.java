@@ -25,8 +25,9 @@ public class GLSquare extends GLFigure {
 
 	private short[] indices_grid = { 0, 1, 2, 3, 0 };
 
-	FloatBuffer vertexBuffer;
-	ShortBuffer indexBuffer;
+	private FloatBuffer vertexBuffer;
+	private FloatBuffer colorBuffer;
+	private ShortBuffer indexBuffer;
 	private FloatBuffer mTextureBuffer;
 
 	private short[] indices;
@@ -34,10 +35,10 @@ public class GLSquare extends GLFigure {
 	public GLSquare(int style) {
 		super(style);
 		this.style = style;
-		if (style == PLANE) {
+		if (style == STYLE_PLANE) {
 			paintStyle = GL10.GL_TRIANGLES;
 			indices = indices_plane;
-		} else if (style == GRID) {
+		} else if (style == STYLE_GRID) {
 			paintStyle = GL10.GL_LINE_STRIP;
 			indices = indices_grid;
 		}
@@ -55,9 +56,17 @@ public class GLSquare extends GLFigure {
 
 		if (texture != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBuffer);
+		if (colorBuffer != null) {
+			color[0] = color[1] = color[2] = 1;
+			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
+		}
 
 		gl.glDrawElements(paintStyle, indices.length, GL10.GL_UNSIGNED_SHORT,
 				indexBuffer);
+
+		if (colorBuffer != null)
+			gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
@@ -84,5 +93,16 @@ public class GLSquare extends GLFigure {
 		}
 
 		mTextureBuffer = allocate(texCoordinates);
+	}
+
+	public void setVertexColor(float[] colors) {
+		if (colors == null) {
+			colorBuffer = null;
+		} else {
+			if (colors.length != 4 * 4)
+				throw new IllegalArgumentException(
+						"length of color array for square must be 16");
+			colorBuffer = allocate(colors);
+		}
 	}
 }

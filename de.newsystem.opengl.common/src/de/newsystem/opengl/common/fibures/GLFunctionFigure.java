@@ -37,7 +37,7 @@ public class GLFunctionFigure extends GLFigure {
 		vertexBuffer = allocate(vertices);
 		textureBuffer = allocate(texture);
 
-		if (style == GRID)
+		if (style == STYLE_GRID)
 			createGridIndices(parts);
 		else
 			createPlaneIndices(parts);

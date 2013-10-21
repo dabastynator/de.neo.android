@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.fibures.GLSquare;
 
 /**
  * The abstract scene renderer provides functionality to render a hole scene,
@@ -77,8 +78,11 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	private int selectX;
 	private int selectY;
 	private View view;
+	private GLSquare gradient;
 
 	protected Context context;
+
+	private float screenRatio;
 
 	/**
 	 * allocate new abstract scene renderer.
@@ -107,6 +111,13 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	private void renderScene(GL10 gl, float red, float green, float blue) {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glClearColor(red, green, blue, 0f);
+		if (gradient != null) {
+			gl.glDisable(GL10.GL_DEPTH_TEST);
+			gl.glLoadIdentity();
+			gl.glTranslatef(0, 0, -1.2f);
+			gradient.draw(gl);
+			gl.glEnable(GL10.GL_DEPTH_TEST);
+		}
 		gl.glLoadIdentity();
 		gl.glTranslatef(translateScene[0], translateScene[1], translateScene[2]);
 		gl.glRotatef(ancX, 1, 0, 0);
@@ -149,6 +160,27 @@ public abstract class AbstractSceneRenderer implements Renderer {
 
 	}
 
+	protected void setGradient(float[] bottom, float[] top) {
+		if (gradient == null) {
+			gradient = new GLSquare(GLFigure.STYLE_PLANE);
+		}
+		float[] colors = new float[16];
+		for (int i = 0; i < 4; i++) {
+			colors[i + 0] = top[i];
+			colors[i + 4] = bottom[i];
+			colors[i + 8] = bottom[i];
+			colors[i + 12] = top[i];
+		}
+		gradient.setVertexColor(colors);
+	}
+	
+	protected void setGradient(Bitmap b){
+		if (gradient == null) {
+			gradient = new GLSquare(GLFigure.STYLE_PLANE);
+		}
+		gradient.setTexture(b);;		
+	}
+
 	protected int getColorAtPixel(GL10 gl, int sx, int sy) {
 		int h = view.getHeight();
 		int b[] = new int[4];
@@ -169,8 +201,11 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		GLU.gluPerspective(gl, 45.0f, (float) width / (float) height, 0.1f,
-				100.0f);
+		screenRatio = (float) width / (float) height;
+		if (gradient != null){
+			gradient.size[0] = screenRatio;
+		}
+		GLU.gluPerspective(gl, 45.0f, screenRatio, 0.1f, 100.0f);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 	}
@@ -217,9 +252,9 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			// ancX += (event.getY() - event
 			// .getHistoricalY(event.getHistorySize() - 1)) * 2;
 			translateScene[0] += (event.getX() - event.getHistoricalX(event
-					.getHistorySize() - 1)) * 0.2f;
+					.getHistorySize() - 1)) * 0.01f * Math.abs(translateScene[2]);
 			translateScene[1] -= (event.getY() - event.getHistoricalY(event
-					.getHistorySize() - 1)) * 0.2f;
+					.getHistorySize() - 1)) * 0.01f * Math.abs(translateScene[2]);
 			translateScene[0] = Math.min(translateSceneBounds[0],
 					Math.max(translateSceneBounds[1], translateScene[0]));
 			translateScene[1] = Math.min(translateSceneBounds[2],
