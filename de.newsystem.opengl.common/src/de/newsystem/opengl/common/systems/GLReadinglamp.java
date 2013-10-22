@@ -17,7 +17,7 @@ public class GLReadinglamp extends GLSwitch {
 		bottom.position[1] = 0.5f;
 
 		top = new GLCylinder(20, 0.3f, 0.6f, style);
-		top.ancX = -90;
+		top.rotation.rotateByAngleAxis(-Math.PI/2, 1, 0, 0);
 		top.position[1] = 1.2f;
 		top.size[2] = 0.8f;
 

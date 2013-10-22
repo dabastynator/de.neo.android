@@ -21,7 +21,7 @@ public class GLTableround extends GLFigure {
 		cylinder = new GLCylinderClosed(30, style);
 		cylinder.size[2] = 0.1f;
 		cylinder.size[0] = cylinder.size[1] = width;
-		cylinder.ancX = 90;
+		cylinder.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
 		cylinder.position[1] = height;
 		cylinder.setColor(0.5f, 0.5f, 0.5f);
 
@@ -42,9 +42,9 @@ public class GLTableround extends GLFigure {
 	protected void onDraw(GL10 gl) {
 		cylinder.draw(gl);
 		pillar.draw(gl);
-		bottom.ancY = 0;
+		bottom.rotation.einselement();
 		bottom.draw(gl);
-		bottom.ancY = 90;
+		bottom.rotation.rotateByAngleAxis(Math.PI/2, 0, 1, 0);
 		bottom.draw(gl);
 	}
 

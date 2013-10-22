@@ -32,7 +32,7 @@ public class GLFloorlamp extends GLSwitch {
 		bottom.color[0] = bottom.color[1] = bottom.color[2] = pillar.color[0] = pillar.color[1] = pillar.color[2] = 0.3f;
 		setSwitch(true);
 
-		pillar.ancX = 90;
+		pillar.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
 		pillar.position[1] = 0.5f;
 		pillar.size[0] = pillar.size[1] = 0.4f;
 

@@ -36,7 +36,7 @@ public class GLCylinderClosed extends GLFigure {
 		if ((surfaces & BACK) != 0) {
 			circleBack = new GLCircle(parts, style);
 			circleBack.size[0] = circleBack.size[1] = radiusBack;
-			circleBack.ancY = 180;
+			circleBack.rotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
 			circleBack.position[2] = -0.5f;
 		}
 		if ((surfaces & FRONT) != 0) {

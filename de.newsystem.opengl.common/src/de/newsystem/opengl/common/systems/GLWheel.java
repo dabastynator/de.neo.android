@@ -35,8 +35,8 @@ public class GLWheel extends GLFigure {
 			spokes[i].size[0] = 0.05f;
 			spokes[i].size[1] = 0.05f;
 			spokes[i].size[2] = (RADIUS_MAJOR - RADIUS_MINOR) * 2;
-			spokes[i].ancY = (180f * i) / spokeCount;
-			spokes[i].ancX = 90;
+			spokes[i].rotation.rotateByAngleAxis(Math.PI * i / spokeCount, 0, 1, 0);
+			spokes[i].rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
 			// graue Farbe für die Speichen
 			spokes[i].color[0] = spokes[i].color[1] = spokes[i].color[2] = 0.3f;
 		}

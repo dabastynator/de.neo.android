@@ -25,9 +25,8 @@ public class GLLavalamp extends GLSwitch{
 		top.position[1] = 1;
 		bottom.size[0] = bottom.size[1] = f.getValue(0);
 		bottom.position[1] = 0;
-		top.ancX = -90;
-		top.ancZ = ((float) 0) / (parts);
-		bottom.ancX = 90;
+		top.rotation.rotateByAngleAxis(-Math.PI/2, 1, 0, 0);
+		bottom.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
 		//
 		setSwitch(true);
 		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.2f;

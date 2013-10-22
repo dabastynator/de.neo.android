@@ -27,8 +27,8 @@ public class GLSolarSystem extends GLFigure{
 	}
 	
 	public void step(double seconds){
-		ancY += seconds * 360 / 10f;
-		earth.ancY += seconds * 360 / 5;
+		rotation.rotateByAngleAxis(seconds * 2 * Math.PI / 10f, 0, 1, 0); 
+		earth.rotation.rotateByAngleAxis(seconds * 2 * Math.PI / 5, 0, 1, 0);
 	}
 	
 	public void setTexture(Bitmap earth_textur, Bitmap moon_textur) {

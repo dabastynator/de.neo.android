@@ -77,9 +77,9 @@ public abstract class GLFigure {
 	public float[] size = {1, 1, 1};
 
 	/**
-	 * Angle
+	 * Rotation
 	 */
-	public float ancX, ancY, ancZ;
+	public GLQuaternion rotation;
 
 	/**
 	 * Color
@@ -110,6 +110,7 @@ public abstract class GLFigure {
 	 */
 	public GLFigure(int style) {
 		this.style = style;
+		rotation = new GLQuaternion();
 		allFigures.add(this);
 	}
 
@@ -148,9 +149,7 @@ public abstract class GLFigure {
 
 		// Figur positionieren
 		gl.glTranslatef(position[0], position[1], position[2]);
-		gl.glRotatef(ancX, 1, 0, 0);
-		gl.glRotatef(ancY, 0, 1, 0);
-		gl.glRotatef(ancZ, 0, 0, 1);
+		rotation.glRotate(gl);
 		gl.glScalef(size[0], size[1], size[2]);
 
 		// Figur zeichnen

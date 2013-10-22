@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.fibures.GLQuaternion;
 import de.newsystem.opengl.common.fibures.GLSquare;
 
 /**
@@ -29,21 +30,6 @@ import de.newsystem.opengl.common.fibures.GLSquare;
 public abstract class AbstractSceneRenderer implements Renderer {
 
 	/**
-	 * Property name to save current zoom value.
-	 */
-	public static final String STATE_SCENE_TRANSLATE = "dummy.state.zoom";
-
-	/**
-	 * Property name to save current x angle value.
-	 */
-	public static final String STATE_ANCX = "dummy.state.ancx";
-
-	/**
-	 * Property name to save current y angle value.
-	 */
-	public static final String STATE_ANCY = "dummy.state.ancy";
-
-	/**
 	 * Use lighting in scene.
 	 */
 	public static final boolean USE_LIGHTING = false;
@@ -52,11 +38,6 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * Current scene object.
 	 */
 	public GLFigure scene;
-
-	/**
-	 * Translate current scene: x=0, y=1, z=2
-	 */
-	protected float[] translateScene = new float[] { 0, 0, -10 };
 
 	/**
 	 * Bounds for scene translation: x_max = 0, x_min = 1, y_max = 2, y_min = 3,
@@ -70,15 +51,13 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 */
 	protected Map<Integer, Bitmap> textureMap;
 
-	protected float ancX = 70;
-	protected float ancY = 0;
-	private float div;
 	public Thread glThread;
 	private boolean selectObject;
 	private int selectX;
 	private int selectY;
 	private View view;
 	private GLSquare gradient;
+	private TouchSceneHandler touchSceneHandler;
 
 	protected Context context;
 
@@ -90,6 +69,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	public AbstractSceneRenderer(Context context) {
 		this.context = context;
 		scene = createScene();
+		touchSceneHandler = new RotateSceneHandler();
 	}
 
 	/**
@@ -119,9 +99,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			gl.glEnable(GL10.GL_DEPTH_TEST);
 		}
 		gl.glLoadIdentity();
-		gl.glTranslatef(translateScene[0], translateScene[1], translateScene[2]);
-		gl.glRotatef(ancX, 1, 0, 0);
-		gl.glRotatef(ancY, 0, 1, 0);
+		touchSceneHandler.glTransformScene(gl);
 		gl.glLineWidth(1);
 
 		scene.draw(gl);
@@ -173,12 +151,13 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		}
 		gradient.setVertexColor(colors);
 	}
-	
-	protected void setGradient(Bitmap b){
+
+	protected void setGradient(Bitmap b) {
 		if (gradient == null) {
 			gradient = new GLSquare(GLFigure.STYLE_PLANE);
 		}
-		gradient.setTexture(b);;		
+		gradient.setTexture(b);
+		;
 	}
 
 	protected int getColorAtPixel(GL10 gl, int sx, int sy) {
@@ -202,7 +181,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		screenRatio = (float) width / (float) height;
-		if (gradient != null){
+		if (gradient != null) {
 			gradient.size[0] = screenRatio;
 		}
 		GLU.gluPerspective(gl, 45.0f, screenRatio, 0.1f, 100.0f);
@@ -244,41 +223,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	}
 
 	public void onTouchEvent(MotionEvent event) {
-		// with one selection rotate or move the scene
-		if (event.getAction() == MotionEvent.ACTION_MOVE
-				&& event.getHistorySize() > 0 && event.getPointerCount() == 1) {
-			// ancY += (event.getX() - event
-			// .getHistoricalX(event.getHistorySize() - 1)) * 2;
-			// ancX += (event.getY() - event
-			// .getHistoricalY(event.getHistorySize() - 1)) * 2;
-			translateScene[0] += (event.getX() - event.getHistoricalX(event
-					.getHistorySize() - 1)) * 0.01f * Math.abs(translateScene[2]);
-			translateScene[1] -= (event.getY() - event.getHistoricalY(event
-					.getHistorySize() - 1)) * 0.01f * Math.abs(translateScene[2]);
-			translateScene[0] = Math.min(translateSceneBounds[0],
-					Math.max(translateSceneBounds[1], translateScene[0]));
-			translateScene[1] = Math.min(translateSceneBounds[2],
-					Math.max(translateSceneBounds[3], translateScene[1]));
-		}
-		// with two selections perform pinch zoom
-		if (event.getAction() == MotionEvent.ACTION_MOVE
-				&& event.getHistorySize() > 0 && event.getPointerCount() == 2) {
-			float dx = event.getX(0) - event.getX(1);
-			float dy = event.getY(0) - event.getY(1);
-			float divn = (float) Math.sqrt(dx * dx + dy * dy);
-			if (div == 0) {
-				div = divn;
-				return;
-			}
-			translateScene[2] += (divn - div) / 7;
-			translateScene[2] = Math.min(translateSceneBounds[4],
-					Math.max(translateSceneBounds[5], translateScene[2]));
-			div = divn;
-			return;
-		}
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			div = 0;
-		}
+		touchSceneHandler.onTouchEvent(event);
 	}
 
 	/**
@@ -312,9 +257,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @param outState
 	 */
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putFloatArray(STATE_SCENE_TRANSLATE, translateScene);
-		outState.putFloat(STATE_ANCX, ancX);
-		outState.putFloat(STATE_ANCY, ancY);
+		touchSceneHandler.onSaveInstanceState(outState);
 	}
 
 	/**
@@ -323,14 +266,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @param bundle
 	 */
 	public void onLoadBundle(Bundle bundle) {
-		if (bundle.containsKey(STATE_ANCX))
-			ancX = bundle.getFloat(STATE_ANCX);
-		if (bundle.containsKey(STATE_ANCY))
-			ancY = bundle.getFloat(STATE_ANCY);
-		if (bundle.containsKey(STATE_SCENE_TRANSLATE))
-			translateScene = bundle.getFloatArray(STATE_SCENE_TRANSLATE);
-		else
-			Log.e("zoom not set", "zoom not set");
+		touchSceneHandler.onLoadBundle(bundle);
 	}
 
 	/**
@@ -376,6 +312,174 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		}
 		Bitmap sb = Bitmap.createBitmap(bt, w, h, Bitmap.Config.ARGB_8888);
 		return sb;
+	}
+
+	public interface TouchSceneHandler {
+
+		public void onTouchEvent(MotionEvent event);
+
+		public void onLoadBundle(Bundle bundle);
+
+		public void onSaveInstanceState(Bundle outState);
+
+		public void glTransformScene(GL10 gl);
+
+	}
+
+	public abstract class ZoomableSceneHandler implements TouchSceneHandler {
+
+		/**
+		 * Property name to save current zoom value.
+		 */
+		public static final String STATE_SCENE_TRANSLATE = "common.state.zoom";
+
+		private float div;
+		protected float[] translateScene = new float[] { 0, 0, -10 };
+
+		@Override
+		public void onTouchEvent(MotionEvent event) {
+			// with two selections perform pinch zoom
+			if (event.getAction() == MotionEvent.ACTION_MOVE
+					&& event.getHistorySize() > 0
+					&& event.getPointerCount() == 2) {
+				float dx = event.getX(0) - event.getX(1);
+				float dy = event.getY(0) - event.getY(1);
+				float divn = (float) Math.sqrt(dx * dx + dy * dy);
+				if (div == 0) {
+					div = divn;
+					return;
+				}
+				translateScene[2] += (divn - div) / 7;
+				translateScene[2] = Math.min(translateSceneBounds[4],
+						Math.max(translateSceneBounds[5], translateScene[2]));
+				div = divn;
+				return;
+			}
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				div = 0;
+			}
+		}
+
+		@Override
+		public void glTransformScene(GL10 gl) {
+			gl.glTranslatef(translateScene[0], translateScene[1],
+					translateScene[2]);
+		}
+
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			outState.putFloatArray(STATE_SCENE_TRANSLATE, translateScene);
+		}
+
+		@Override
+		public void onLoadBundle(Bundle bundle) {
+			if (bundle.containsKey(STATE_SCENE_TRANSLATE))
+				translateScene = bundle.getFloatArray(STATE_SCENE_TRANSLATE);
+		}
+
+	}
+
+	private class TranslateSceneHandler extends ZoomableSceneHandler {
+
+		/**
+		 * Property name to save current x angle value.
+		 */
+		public static final String STATE_ANCX = "common.state.ancx";
+
+		/**
+		 * Property name to save current y angle value.
+		 */
+		public static final String STATE_ANCY = "common.state.ancy";
+
+		protected float ancX = 70;
+		protected float ancY = 0;
+
+		@Override
+		public void onTouchEvent(MotionEvent event) {
+			super.onTouchEvent(event);
+			// with one selection rotate or move the scene
+			if (event.getAction() == MotionEvent.ACTION_MOVE
+					&& event.getHistorySize() > 0
+					&& event.getPointerCount() == 1) {
+				translateScene[0] += (event.getX() - event.getHistoricalX(event
+						.getHistorySize() - 1))
+						* 0.01f
+						* Math.abs(translateScene[2]);
+				translateScene[1] -= (event.getY() - event.getHistoricalY(event
+						.getHistorySize() - 1))
+						* 0.01f
+						* Math.abs(translateScene[2]);
+				translateScene[0] = Math.min(translateSceneBounds[0],
+						Math.max(translateSceneBounds[1], translateScene[0]));
+				translateScene[1] = Math.min(translateSceneBounds[2],
+						Math.max(translateSceneBounds[3], translateScene[1]));
+			}
+		}
+
+		@Override
+		public void glTransformScene(GL10 gl) {
+			super.glTransformScene(gl);
+			gl.glRotatef(ancX, 1, 0, 0);
+			gl.glRotatef(ancY, 0, 1, 0);
+		}
+
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			super.onSaveInstanceState(outState);
+			outState.putFloat(STATE_ANCX, ancX);
+			outState.putFloat(STATE_ANCY, ancY);
+		}
+
+		@Override
+		public void onLoadBundle(Bundle bundle) {
+			super.onLoadBundle(bundle);
+			if (bundle.containsKey(STATE_ANCX))
+				ancX = bundle.getFloat(STATE_ANCX);
+			if (bundle.containsKey(STATE_ANCY))
+				ancY = bundle.getFloat(STATE_ANCY);
+		}
+	}
+
+	private class RotateSceneHandler extends ZoomableSceneHandler {
+
+		private GLQuaternion quaternion;
+		
+		public RotateSceneHandler() {
+			quaternion = new GLQuaternion();
+		}
+		
+
+		@Override
+		public void onTouchEvent(MotionEvent event) {
+			super.onTouchEvent(event);
+			if (event.getAction() == MotionEvent.ACTION_MOVE
+					&& event.getHistorySize() > 0
+					&& event.getPointerCount() == 1) {
+				float x = (event.getX() - event.getHistoricalX(event
+						.getHistorySize() - 1));
+				float y = (event.getY() - event.getHistoricalY(event
+						.getHistorySize() - 1));
+				float angle = (float) Math.sqrt(x*x+y*y) / 40;
+				quaternion.rotateByAngleAxis(angle, y, x, 0);
+			}
+		}
+
+		@Override
+		public void onLoadBundle(Bundle bundle) {
+			super.onLoadBundle(bundle);
+		}
+
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			super.onSaveInstanceState(outState);
+		}
+
+		@Override
+		public void glTransformScene(GL10 gl) {
+			super.glTransformScene(gl);
+			quaternion.glRotate(gl);
+		}
+
 	}
 
 }

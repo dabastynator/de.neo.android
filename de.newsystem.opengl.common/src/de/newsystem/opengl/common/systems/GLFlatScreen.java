@@ -51,7 +51,7 @@ public class GLFlatScreen extends GLSwitch {
 	private void initBottom() {
 		bottom.size[0] = screenWidth * 0.5f;
 		bottom.size[1] = screenHeigh * 0.5f;
-		bottom.ancX = -90;
+		bottom.rotation.rotateByAngleAxis(-Math.PI/2, 1, 0, 0);
 		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.3f;
 	}
 
@@ -60,7 +60,7 @@ public class GLFlatScreen extends GLSwitch {
 		screen.size[1] = screenHeigh;
 		screen.position[1] = height - screenHeigh / 2;
 		screen.color[0] = screen.color[1] = screen.color[2] = 0;
-		screen.ancX = 180;
+		screen.rotation.rotateByAngleAxis(Math.PI, 1, 0, 0);
 	}
 
 	@Override
