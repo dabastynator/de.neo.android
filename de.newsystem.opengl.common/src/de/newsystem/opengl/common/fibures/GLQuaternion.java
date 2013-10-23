@@ -40,6 +40,9 @@ public class GLQuaternion {
 		i = _i;
 		j = _j;
 		k = _k;
+		if (Float.isNaN(r) || Float.isNaN(i) || Float.isNaN(j)
+				|| Float.isNaN(k))
+			einselement();
 		calculateGlRotation();
 	}
 
@@ -48,7 +51,11 @@ public class GLQuaternion {
 	}
 
 	public void rotateByAngleAxis(double angle, float x, float y, float z) {
+		if (angle == 0)
+			return;
 		float length = (float) Math.sqrt(x * x + y * y + z * z);
+		if (length == 0)
+			return;
 		float sin_l = (float) Math.sin(angle / 2) / length;
 		multiply((float) Math.cos(angle / 2), x * sin_l, y * sin_l, z * sin_l);
 	}
@@ -76,6 +83,20 @@ public class GLQuaternion {
 		i = 0;
 		j = 0;
 		k = 0;
+		calculateGlRotation();
+	}
+
+	public float[] toArray() {
+		return new float[] { r, i, j, k };
+	}
+
+	public void loadArray(float[] array) {
+		if (array.length != 4)
+			throw new IllegalArgumentException("arraylength must be equal to 4 for quaternions");
+		r = array[0];
+		i = array[1];
+		j = array[2];
+		k = array[3];
 		calculateGlRotation();
 	}
 

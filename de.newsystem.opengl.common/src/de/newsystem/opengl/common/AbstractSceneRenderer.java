@@ -157,7 +157,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			gradient = new GLSquare(GLFigure.STYLE_PLANE);
 		}
 		gradient.setTexture(b);
-		;
+	}
+
+	protected void setTouchSceneHandler(TouchSceneHandler handler) {
+		touchSceneHandler = handler;
 	}
 
 	protected int getColorAtPixel(GL10 gl, int sx, int sy) {
@@ -334,7 +337,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		public static final String STATE_SCENE_TRANSLATE = "common.state.zoom";
 
 		private float div;
-		protected float[] translateScene = new float[] { 0, 0, -10 };
+		public float[] translateScene = new float[] { 0, 0, -10 };
 
 		@Override
 		public void onTouchEvent(MotionEvent event) {
@@ -349,15 +352,13 @@ public abstract class AbstractSceneRenderer implements Renderer {
 					div = divn;
 					return;
 				}
-				translateScene[2] += (divn - div) / 7;
+				translateScene[2] += Math.abs(translateScene[2]) * (divn - div) / 250;
 				translateScene[2] = Math.min(translateSceneBounds[4],
 						Math.max(translateSceneBounds[5], translateScene[2]));
 				div = divn;
 				return;
-			}
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			} else
 				div = 0;
-			}
 		}
 
 		@Override
@@ -379,7 +380,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 
 	}
 
-	private class TranslateSceneHandler extends ZoomableSceneHandler {
+	protected class TranslateSceneHandler extends ZoomableSceneHandler {
 
 		/**
 		 * Property name to save current x angle value.
@@ -391,8 +392,12 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		 */
 		public static final String STATE_ANCY = "common.state.ancy";
 
-		protected float ancX = 70;
-		protected float ancY = 0;
+		public float ancX = 70;
+		public float ancY = 0;
+
+		public TranslateSceneHandler() {
+			// TODO Auto-generated constructor stub
+		}
 
 		@Override
 		public void onTouchEvent(MotionEvent event) {
@@ -440,14 +445,18 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		}
 	}
 
-	private class RotateSceneHandler extends ZoomableSceneHandler {
+	protected class RotateSceneHandler extends ZoomableSceneHandler {
 
-		private GLQuaternion quaternion;
+		/**
+		 * Property name to save current quaternion.
+		 */
+		public static final String STATE_QUATERNION = "common.state.quaternion";
 		
+		private GLQuaternion quaternion;
+
 		public RotateSceneHandler() {
 			quaternion = new GLQuaternion();
 		}
-		
 
 		@Override
 		public void onTouchEvent(MotionEvent event) {
@@ -459,7 +468,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 						.getHistorySize() - 1));
 				float y = (event.getY() - event.getHistoricalY(event
 						.getHistorySize() - 1));
-				float angle = (float) Math.sqrt(x*x+y*y) / 40;
+				float angle = (float) Math.sqrt(x * x + y * y) / 40;
 				quaternion.rotateByAngleAxis(angle, y, x, 0);
 			}
 		}
@@ -467,11 +476,14 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		@Override
 		public void onLoadBundle(Bundle bundle) {
 			super.onLoadBundle(bundle);
+			if (bundle.containsKey(STATE_QUATERNION))
+				quaternion.loadArray(bundle.getFloatArray(STATE_QUATERNION));
 		}
 
 		@Override
 		public void onSaveInstanceState(Bundle outState) {
 			super.onSaveInstanceState(outState);
+			outState.putFloatArray(STATE_QUATERNION, quaternion.toArray());
 		}
 
 		@Override
