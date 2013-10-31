@@ -13,11 +13,13 @@ public class GLBoxplate extends GLFigure {
 	private float[] vertex;
 	private float textureCoordinates[];
 	private FloatBuffer vertexBuffer;
+	private FloatBuffer normalBuffer;
 	private int drawStyle;
 
 	public GLBoxplate(int parts, float y1, float r1, float y2, float r2) {
 		super(GLFigure.STYLE_PLANE);
 		vertex = new float[(2 * parts + 6) * 3];
+		float[] normal = new float[(2 * parts + 6) * 3];
 		float steps = (float) ((Math.PI * 2) / (parts));
 
 		// alle Punke für den oberen und unteren kreis
@@ -29,7 +31,7 @@ public class GLBoxplate extends GLFigure {
 			vertex[i * 3 + 2] = 0;
 			vertex[(i + parts) * 3 + 0] = sin * r2;
 			vertex[(i + parts) * 3 + 1] = cos * r2 + y2;
-			vertex[(i + parts) * 3 + 2] = 0;
+			vertex[(i + parts) * 3 + 2] = 0;			
 		}
 		// 4 Randknoten + 2 Hilfsknoten
 		vertex[parts * 6 + 0] = 0.25f;
@@ -50,11 +52,17 @@ public class GLBoxplate extends GLFigure {
 		vertex[parts * 6 + 15] = -0.25f;
 		vertex[parts * 6 + 16] = 1f;
 		vertex[parts * 6 + 17] = 0;
+		
+		for (int i=0;i<2 * parts + 6;i++){
+			normal[i * 3 + 0] = 0;
+			normal[i * 3 + 1] = 0;
+			normal[i * 3 + 2] = 1;
+		}
 
 		createPlaneIndices(parts, y1, r1, y2, r2);
 
 		vertexBuffer = allocate(vertex);
-
+		normalBuffer = allocate(normal);
 		indexBuffer = allocate(indices);
 	}
 
@@ -136,9 +144,12 @@ public class GLBoxplate extends GLFigure {
 	protected void onDraw(GL10 gl) {
 		gl.glFrontFace(GL10.GL_CCW);
 		gl.glCullFace(GL10.GL_FRONT);
+		gl.glEnable(GL10.GL_CULL_FACE);
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, normalBuffer);
 
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
@@ -148,6 +159,7 @@ public class GLBoxplate extends GLFigure {
 		gl.glDrawElements(drawStyle, indices.length, GL10.GL_UNSIGNED_SHORT,
 				indexBuffer);
 
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisable(GL10.GL_CULL_FACE);
 	}

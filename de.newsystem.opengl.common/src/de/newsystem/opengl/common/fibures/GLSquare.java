@@ -7,6 +7,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 
+/**
+ * The GLSqure just shows a simple square. Optional with vertex color or/and
+ * (scaled) texture.
+ * 
+ * @author sebastian
+ */
 public class GLSquare extends GLFigure {
 	// http://blog.jayway.com/2010/01/14/opengl-es-tutorial-for-android-%E2%80%93-part-iv-adding-colors/
 	public int style;
@@ -17,6 +23,8 @@ public class GLSquare extends GLFigure {
 			0.5f, -0.5f, 0.0f, // 2, Bottom Right
 			0.5f, 0.5f, 0.0f, // 3, Top Right
 	};
+
+	protected float normals[] = { 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1 };
 
 	protected float textureCoordinates[] = { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 			0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f };
@@ -29,6 +37,7 @@ public class GLSquare extends GLFigure {
 	private FloatBuffer colorBuffer;
 	private ShortBuffer indexBuffer;
 	private FloatBuffer mTextureBuffer;
+	private FloatBuffer normalBuffer;
 
 	private short[] indices;
 
@@ -46,6 +55,7 @@ public class GLSquare extends GLFigure {
 		vertexBuffer = allocate(vertices);
 		indexBuffer = allocate(indices);
 		mTextureBuffer = allocate(textureCoordinates);
+		normalBuffer = allocate(normals);
 	}
 
 	protected void onDraw(GL10 gl) {
@@ -53,6 +63,8 @@ public class GLSquare extends GLFigure {
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, normalBuffer);
 
 		if (texture != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBuffer);
@@ -61,13 +73,13 @@ public class GLSquare extends GLFigure {
 			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
 		}
-
+		
 		gl.glDrawElements(paintStyle, indices.length, GL10.GL_UNSIGNED_SHORT,
 				indexBuffer);
 
-		if (colorBuffer != null)
-			gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-
+		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE);
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 

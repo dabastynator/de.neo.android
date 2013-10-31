@@ -14,6 +14,7 @@ public class GLCylinder extends GLFigure {
 	private float[] vertex;
 	private float textureCoordinates[];
 	private int drawStyle;
+	private FloatBuffer normalBuffer;
 
 	/**
 	 * Ein Zylinder der Breite Höhe und Länge von 1
@@ -31,7 +32,13 @@ public class GLCylinder extends GLFigure {
 	public GLCylinder(int parts, float radiusFront, float radiusBack, int style) {
 		super(style);
 		vertex = new float[parts * 6 + 12];
+		float[] normal = new float[parts * 6 + 12];
 		float steps = (float) ((Math.PI * 2) / parts);
+		float gegK = radiusFront-radiusBack;
+		float hyp = (float) Math.sqrt(gegK*gegK+1);
+		float sinM = gegK/hyp;
+		float alpha = (float) Math.asin(sinM);
+		float cosM = (float) Math.cos(alpha);
 
 		// alle Punke für die obere und untere Platte des Zylinders
 		for (int i = 0; i <= parts; i++) {
@@ -43,10 +50,18 @@ public class GLCylinder extends GLFigure {
 			vertex[i * 3 + 1] = cos * radiusBack;
 			vertex[i * 3 + 2] = -0.5f;
 
+			normal[i * 3] = sin * cosM;
+			normal[i * 3 + 1] = cos * cosM;
+			normal[i * 3 + 2] = -sinM;
+
 			// Fordere Seite des Zylinders
 			vertex[i * 3 + parts * 3 + 3] = sin * radiusFront;
 			vertex[i * 3 + parts * 3 + 4] = cos * radiusFront;
 			vertex[i * 3 + parts * 3 + 5] = 0.5f;
+
+			normal[i * 3 + parts * 3 + 3] = normal[i * 3];
+			normal[i * 3 + parts * 3 + 4] = normal[i * 3 + 1];
+			normal[i * 3 + parts * 3 + 5] = normal[i * 3 + 2];
 		}
 		// Mitte der beiden Kreise
 		vertex[parts * 6 + 6] = 0;
@@ -57,13 +72,22 @@ public class GLCylinder extends GLFigure {
 		vertex[parts * 6 + 10] = 0;
 		vertex[parts * 6 + 11] = 0.5f;
 
+		// Mitte der beiden Kreise
+		normal[parts * 6 + 6] = 0;
+		normal[parts * 6 + 7] = 0;
+		normal[parts * 6 + 8] = -1;
+
+		normal[parts * 6 + 9] = 0;
+		normal[parts * 6 + 10] = 0;
+		normal[parts * 6 + 11] = 1f;
+
 		if (style == STYLE_GRID)
 			createGridIndices(parts);
 		else
 			createPlaneIndices(parts);
 
 		vertexBuffer = allocate(vertex);
-
+		normalBuffer = allocate(normal);
 		indexBuffer = allocate(indices);
 	}
 
@@ -122,6 +146,8 @@ public class GLCylinder extends GLFigure {
 		gl.glCullFace(GL10.GL_FRONT);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, normalBuffer);
 
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
@@ -132,6 +158,7 @@ public class GLCylinder extends GLFigure {
 				indexBuffer);
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glDisable(GL10.GL_CULL_FACE);
 	}
 

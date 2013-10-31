@@ -89,6 +89,8 @@ public class GLBall extends GLFigure {
 		gl.glCullFace(GL10.GL_FRONT);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, vertexBuffer);
 		
 		if (texture != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
@@ -96,6 +98,9 @@ public class GLBall extends GLFigure {
 		// Punke zeichnen
 		gl.glDrawElements(style, indices.length,
 				GL10.GL_UNSIGNED_SHORT, indexBuffer);
+		
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 	}
 
 }

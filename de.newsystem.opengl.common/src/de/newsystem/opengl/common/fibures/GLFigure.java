@@ -5,10 +5,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import javax.microedition.khronos.opengles.GL10;
-
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 
@@ -37,14 +38,14 @@ public abstract class GLFigure {
 	 * Paint object as solid plane
 	 */
 	public static final int STYLE_PLANE = 2;
-	
+
 	/**
 	 * Normal render mode
 	 */
 	public static final int DRAW_MODE_NORMAL = 0;
-	
+
 	/**
-	 * Render id color for picking figures 
+	 * Render id color for picking figures
 	 */
 	public static final int DRAW_MODE_PICK_ID = 1;
 
@@ -53,8 +54,8 @@ public abstract class GLFigure {
 	 */
 	private static int ID_COUNTER = 1;
 
-
 	protected static List<GLFigure> allFigures = new ArrayList<GLFigure>();
+	protected static Map<Bitmap, Integer> allTextures = new HashMap<Bitmap, Integer>();
 
 	public static void setFigureDrawMode(int draw_mode) {
 		for (GLFigure f : allFigures)
@@ -69,12 +70,12 @@ public abstract class GLFigure {
 	/**
 	 * Position
 	 */
-	public float[] position = {0,0,0};
+	public float[] position = { 0, 0, 0 };
 
 	/**
 	 * Size
 	 */
-	public float[] size = {1, 1, 1};
+	public float[] size = { 1, 1, 1 };
 
 	/**
 	 * Rotation
@@ -84,7 +85,7 @@ public abstract class GLFigure {
 	/**
 	 * Color
 	 */
-	public float[] color = {1, 1, 1, 1};
+	public float[] color = { 1, 1, 1, 1 };
 
 	/**
 	 * Textrue
@@ -119,6 +120,7 @@ public abstract class GLFigure {
 	 * 
 	 * @param gl
 	 */
+	@SuppressLint("WrongCall")
 	public final void draw(GL10 gl) {
 
 		if (draw_mode == DRAW_MODE_PICK_ID && style == STYLE_GRID)
@@ -178,21 +180,26 @@ public abstract class GLFigure {
 	private void loadTexture(GL10 gl) {
 		// id für Textur
 		textures = new int[1];
-		gl.glGenTextures(1, textures, 0);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+		if (allTextures.containsKey(texture)) {
+			textures[0] = allTextures.get(texture);
+		} else {
+			gl.glGenTextures(1, textures, 0);
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
 
-		// Parameter für die Textur
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-				GL10.GL_REPEAT);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
-				GL10.GL_REPEAT);
+			// Parameter für die Textur
+			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+					GL10.GL_LINEAR);
+			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+					GL10.GL_LINEAR);
+			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+					GL10.GL_REPEAT);
+			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+					GL10.GL_REPEAT);
 
-		// Textur setzen
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture, 0);
+			// Textur setzen
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture, 0);
+			allTextures.put(texture, textures[0]);
+		}
 	}
 
 	public void setTexture(Bitmap b) {
@@ -216,6 +223,14 @@ public abstract class GLFigure {
 		vbb.order(ByteOrder.nativeOrder());
 		ShortBuffer buffer = vbb.asShortBuffer();
 		buffer.put(array);
+		buffer.position(0);
+		return buffer;
+	}
+
+	protected FloatBuffer allocateFloat(int size) {
+		ByteBuffer vbb = ByteBuffer.allocateDirect(size);
+		vbb.order(ByteOrder.nativeOrder());
+		FloatBuffer buffer = vbb.asFloatBuffer();
 		buffer.position(0);
 		return buffer;
 	}

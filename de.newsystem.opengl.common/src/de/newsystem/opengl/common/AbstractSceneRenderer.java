@@ -32,7 +32,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	/**
 	 * Use lighting in scene.
 	 */
-	public static final boolean USE_LIGHTING = false;
+	public static final boolean USE_LIGHTING = true;
 
 	/**
 	 * Current scene object.
@@ -93,6 +93,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glClearColor(red, green, blue, 0f);
 		if (gradient != null) {
 			gl.glDisable(GL10.GL_DEPTH_TEST);
+			gl.glDisable(GL10.GL_LIGHTING);
 			gl.glLoadIdentity();
 			gl.glTranslatef(0, 0, -1.2f);
 			gradient.draw(gl);
@@ -101,7 +102,9 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glLoadIdentity();
 		touchSceneHandler.glTransformScene(gl);
 		gl.glLineWidth(1);
-
+		if (USE_LIGHTING && !selectObject){
+			gl.glEnable(GL10.GL_LIGHTING);
+		}
 		scene.draw(gl);
 	}
 

@@ -7,35 +7,50 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLFunctionFigure extends GLFigure {
 
+	public static final float GEOMETRIC_EPSILON = 0.001f;
+	
 	private FloatBuffer vertexBuffer;
 	private ShortBuffer indexBuffer;
+	private FloatBuffer normalBuffer;
 	private short[] indices;
 	private int style;
 	private FloatBuffer textureBuffer;
 
 	public GLFunctionFigure(int parts, int style, Function f) {
 		super(style);
-		float[] vertices = new float[parts * (parts + 1) * 3];
+//		float[] vertices = new float[parts * (parts + 1) * 3];
 		float[] texture = new float[parts * (parts + 1) * 2];
+		
+		vertexBuffer = allocateFloat(parts * (parts + 1) * 3 * 4);
+		normalBuffer = allocateFloat(parts * (parts + 1) * 3 * 4);
 
 		float stepX = (float) (2 * Math.PI / parts);
 		for (int i = 0; i < parts; i++) {
 			float y = ((float) i) / (parts - 1);
 			float mulX = f.getValue(((float) i) / (parts - 1));
+			float delta = (f.getValue(((float) i) / (parts - 1)+GEOMETRIC_EPSILON) - mulX)/GEOMETRIC_EPSILON;
+			float alpha = (float) Math.atan(delta);
+			float sinM = (float) Math.sin(alpha);
+			float cosM = (float) Math.cos(alpha);
 			for (int j = 0; j <= parts; j++) {
-				float x = (float) Math.cos(stepX * j) * mulX;
-				float z = (float) Math.sin(stepX * j) * mulX;
-				vertices[3 * (i * (parts + 1) + j)] = x;
-				vertices[3 * (i * (parts + 1) + j) + 1] = y;
-				vertices[3 * (i * (parts + 1) + j) + 2] = z;
+				float sin = (float) Math.sin(stepX * j);
+				float cos = (float) Math.cos(stepX * j);
+				vertexBuffer.put(cos  * mulX);
+				vertexBuffer.put(y);
+				vertexBuffer.put(sin * mulX);
+				
+				normalBuffer.put(cos*cosM);
+				normalBuffer.put(-sinM);
+				normalBuffer.put(sin*cosM);
 
 				texture[2 * (i * (parts + 1) + j)] = 1 - ((float) j) / parts;
 				texture[2 * (i * (parts + 1) + j) + 1] = 1 - ((float) i)
 						/ (parts - 1);
 			}
 		}
-		vertexBuffer = allocate(vertices);
+		vertexBuffer.position(0);
 		textureBuffer = allocate(texture);
+		normalBuffer.position(0);
 
 		if (style == STYLE_GRID)
 			createGridIndices(parts);
@@ -90,6 +105,9 @@ public class GLFunctionFigure extends GLFigure {
 		gl.glCullFace(GL10.GL_BACK);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, normalBuffer);
 
 		if (texture != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
@@ -97,6 +115,9 @@ public class GLFunctionFigure extends GLFigure {
 		// Punke zeichnen
 		gl.glDrawElements(style, indices.length, GL10.GL_UNSIGNED_SHORT,
 				indexBuffer);
+		
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 
 	public interface Function {

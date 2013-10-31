@@ -10,9 +10,9 @@ public class GLCircle extends GLFigure {
 	private ShortBuffer indexBuffer;
 	private FloatBuffer mTextureBuffer;
 	private short[] indices;
-	private float[] vertex;
 	private float textureCoordinates[];
 	private FloatBuffer vertexBuffer;
+	private FloatBuffer normalBuffer;
 	private int drawStyle;
 
 	public GLCircle(int parts) {
@@ -21,29 +21,36 @@ public class GLCircle extends GLFigure {
 
 	public GLCircle(int parts, int style) {
 		super(style);
-		vertex = new float[parts * 3 + 3];
+		vertexBuffer = allocateFloat((parts * 3 + 6)*4);
+		normalBuffer = allocateFloat((parts * 3 + 6)*4);
 		float steps = (float) ((Math.PI * 2) / (parts));
 
 		// alle Punke für die obere und untere Platte des Zylinders
 		for (int i = 0; i <= parts; i++) {
 			float sin = (float) Math.sin(i * steps);
 			float cos = (float) Math.cos(i * steps);
-			vertex[i * 3 + 0] = sin;
-			vertex[i * 3 + 1] = cos;
-			vertex[i * 3 + 2] = 0;
+			vertexBuffer.put(sin);
+			vertexBuffer.put(cos);
+			vertexBuffer.put(0);
+			normalBuffer.put(0);
+			normalBuffer.put(0);
+			normalBuffer.put(1);
 		}
 		// Mitte der beiden Kreise
-		vertex[parts * 3 + 0] = 0;
-		vertex[parts * 3 + 1] = 0;
-		vertex[parts * 3 + 2] = 0;
+		vertexBuffer.put(0);
+		vertexBuffer.put(0);
+		vertexBuffer.put(0);
+		normalBuffer.put(0);
+		normalBuffer.put(0);
+		normalBuffer.put(1);
 
 		if (style == STYLE_GRID)
 			createGridIndices(parts);
 		else
 			createPlaneIndices(parts);
 
-		vertexBuffer = allocate(vertex);
-
+		vertexBuffer.position(0);
+		normalBuffer.position(0);
 		indexBuffer = allocate(indices);
 	}
 
@@ -85,6 +92,9 @@ public class GLCircle extends GLFigure {
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, normalBuffer);
 
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
@@ -95,6 +105,7 @@ public class GLCircle extends GLFigure {
 				indexBuffer);
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glDisable(GL10.GL_CULL_FACE);
 	}
 
