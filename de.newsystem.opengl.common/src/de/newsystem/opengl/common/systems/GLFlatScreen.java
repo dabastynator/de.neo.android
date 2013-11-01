@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.fibures.GLCube;
-import de.newsystem.opengl.common.fibures.GLSquare;
+import de.newsystem.opengl.common.figures.GLCube;
+import de.newsystem.opengl.common.figures.GLSquare;
 
 public class GLFlatScreen extends GLSwitch {
 

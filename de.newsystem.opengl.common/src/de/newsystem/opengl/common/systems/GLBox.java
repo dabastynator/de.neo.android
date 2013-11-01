@@ -3,9 +3,9 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.fibures.GLBoxplate;
-import de.newsystem.opengl.common.fibures.GLCube;
-import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.figures.GLBoxplate;
+import de.newsystem.opengl.common.figures.GLCube;
+import de.newsystem.opengl.common.figures.GLFigure;
 
 public class GLBox extends GLFigure {
 

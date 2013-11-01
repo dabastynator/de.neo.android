@@ -2,8 +2,8 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.fibures.GLBall;
-import de.newsystem.opengl.common.fibures.GLCylinder;
+import de.newsystem.opengl.common.figures.GLBall;
+import de.newsystem.opengl.common.figures.GLCylinder;
 
 public class GLReadinglamp extends GLSwitch {
 

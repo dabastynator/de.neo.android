@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
-import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.figures.GLFigure;
 
 public class AbstractSceneSurfaceView extends GLSurfaceView {
 

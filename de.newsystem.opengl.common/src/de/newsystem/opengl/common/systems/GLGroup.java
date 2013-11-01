@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.figures.GLFigure;
 
 /**
  * The GLGroup groups several gl figures.

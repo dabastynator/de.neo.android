@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common.fibures;
+package de.newsystem.opengl.common.figures;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -293,6 +293,7 @@ public abstract class GLFigure {
 	}
 
 	public static void reloadTextures() {
+		allTextures.clear();
 		for (GLFigure figure : allFigures)
 			figure.textures = null;
 	}

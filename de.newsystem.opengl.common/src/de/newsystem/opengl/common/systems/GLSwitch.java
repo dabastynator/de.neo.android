@@ -1,6 +1,6 @@
 package de.newsystem.opengl.common.systems;
 
-import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.figures.GLFigure;
 
 public abstract class GLSwitch extends GLFigure implements IGLSwitch{
 

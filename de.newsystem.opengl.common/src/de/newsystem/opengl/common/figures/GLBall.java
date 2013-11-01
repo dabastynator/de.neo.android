@@ -1,4 +1,4 @@
-package de.newsystem.opengl.common.fibures;
+package de.newsystem.opengl.common.figures;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;

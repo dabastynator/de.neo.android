@@ -16,8 +16,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
-import de.newsystem.opengl.common.fibures.GLFigure;
-import de.newsystem.opengl.common.fibures.GLSquare;
+import de.newsystem.opengl.common.figures.GLFigure;
+import de.newsystem.opengl.common.figures.GLSquare;
 import de.newsystem.opengl.common.touchhandler.RotateSceneHandler;
 import de.newsystem.opengl.common.touchhandler.TouchSceneHandler;
 
@@ -109,8 +109,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 
 	private void selectObject(GL10 gl, int selectX, int selectY) {
 		GLFigure.setFigureDrawMode(GLFigure.DRAW_MODE_PICK_ID);
-		if (useLighting)
-			gl.glDisable(GL10.GL_LIGHTING);
+		gl.glDisable(GL10.GL_LIGHTING);
 		renderScene(gl, 1, 1, 1);
 		int color = getColorAtPixel(gl, selectX, selectY);
 		int red = (color >> 16) & 0xFF;
@@ -126,8 +125,6 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		} else
 			onNoFigureTouched(gl);
 		GLFigure.setFigureDrawMode(GLFigure.DRAW_MODE_NORMAL);
-		if (useLighting)
-			gl.glEnable(GL10.GL_LIGHTING);
 	}
 
 	protected void onFigureTouched(GL10 gl, GLFigure figure) {

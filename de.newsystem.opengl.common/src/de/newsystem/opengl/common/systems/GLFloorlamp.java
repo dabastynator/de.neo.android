@@ -3,8 +3,8 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.fibures.GLCube;
-import de.newsystem.opengl.common.fibures.GLCylinder;
+import de.newsystem.opengl.common.figures.GLCube;
+import de.newsystem.opengl.common.figures.GLCylinder;
 
 public class GLFloorlamp extends GLSwitch {
 
@@ -22,12 +22,12 @@ public class GLFloorlamp extends GLSwitch {
 		light = new GLCube(style);
 		pillar = new GLCylinder(7, 0.2f, 0.2f, style, false);
 
-		bottom.size[1] = 0.2f;
+		bottom.size[1] = 0.1f;
 		bottom.size[0] = bottom.size[2] = light.size[0] = light.size[2] = 0.5f;
 		bottom.position[1] = 0.1f;
-		light.size[1] = 2f;
+		light.size[1] = 1.5f;
 
-		light.position[1] = 0.7f + light.size[1] / 2;
+		light.position[1] = 0.6f + light.size[1] / 2;
 
 		bottom.color[0] = bottom.color[1] = bottom.color[2] = pillar.color[0] = pillar.color[1] = pillar.color[2] = 0.3f;
 		setSwitch(true);

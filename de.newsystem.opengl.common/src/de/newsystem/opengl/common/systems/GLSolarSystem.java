@@ -3,8 +3,8 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.fibures.GLBall;
-import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.figures.GLBall;
+import de.newsystem.opengl.common.figures.GLFigure;
 
 public class GLSolarSystem extends GLFigure{
 

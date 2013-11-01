@@ -2,8 +2,8 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.fibures.GLCircle;
-import de.newsystem.opengl.common.fibures.GLFunctionFigure;
+import de.newsystem.opengl.common.figures.GLCircle;
+import de.newsystem.opengl.common.figures.GLFunctionFigure;
 
 public class GLLavalamp extends GLSwitch{
 

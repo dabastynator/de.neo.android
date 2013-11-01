@@ -3,9 +3,9 @@ package de.newsystem.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.newsystem.opengl.common.fibures.GLCircle;
-import de.newsystem.opengl.common.fibures.GLCylinder;
-import de.newsystem.opengl.common.fibures.GLFigure;
+import de.newsystem.opengl.common.figures.GLCircle;
+import de.newsystem.opengl.common.figures.GLCylinder;
+import de.newsystem.opengl.common.figures.GLFigure;
 
 public class GLCylinderClosed extends GLFigure {
 

@@ -2,9 +2,9 @@ package de.newsystem.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import de.newsystem.opengl.common.fibures.GLCylinder;
-import de.newsystem.opengl.common.fibures.GLFigure;
-import de.newsystem.opengl.common.fibures.GLTorus;
+import de.newsystem.opengl.common.figures.GLCylinder;
+import de.newsystem.opengl.common.figures.GLFigure;
+import de.newsystem.opengl.common.figures.GLTorus;
 
 public class GLWheel extends GLFigure {
 
