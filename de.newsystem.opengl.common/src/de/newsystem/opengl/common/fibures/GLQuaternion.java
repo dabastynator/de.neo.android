@@ -100,4 +100,12 @@ public class GLQuaternion {
 		calculateGlRotation();
 	}
 
+	public void assign(GLQuaternion q) {
+		r = q.r;
+		i = q.i;
+		j = q.j;
+		k = q.k;
+		calculateGlRotation();
+	}
+
 }

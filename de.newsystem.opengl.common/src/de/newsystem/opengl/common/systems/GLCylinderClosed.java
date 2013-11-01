@@ -23,25 +23,28 @@ public class GLCylinderClosed extends GLFigure {
 	}
 	
 	public GLCylinderClosed(int parts, int style, int surfaces){
-		this(parts, style, surfaces, 0.5f,0.5f);
+		this(parts, style, surfaces, 0.5f,0.5f, false);
 	}
 	
 	public GLCylinderClosed(int parts, int style, int surfaces,
-			float radiusFront, float radiusBack) {
+			float radiusFront, float radiusBack, boolean invert) {
 		super(style);
 		this.surfaces = surfaces;
 		if ((surfaces & CYLINDER) != 0) {
-			cylinder = new GLCylinder(parts, radiusFront, radiusBack, style);
+			cylinder = new GLCylinder(parts, radiusFront, radiusBack, style, invert);
 		}
 		if ((surfaces & BACK) != 0) {
 			circleBack = new GLCircle(parts, style);
 			circleBack.size[0] = circleBack.size[1] = radiusBack;
-			circleBack.rotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
+			if (!invert)
+			  circleBack.rotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
 			circleBack.position[2] = -0.5f;
 		}
 		if ((surfaces & FRONT) != 0) {
 			circleFront = new GLCircle(parts, style);
 			circleFront.size[0] = circleFront.size[1] = radiusFront;
+			if (invert)
+				  circleBack.rotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
 			circleFront.position[2] = 0.5f;
 		}
 	}

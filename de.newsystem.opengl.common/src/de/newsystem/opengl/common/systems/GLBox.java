@@ -32,7 +32,7 @@ public class GLBox extends GLFigure {
 		plate.color[2] = cube.color[2] = 0.03f;
 
 		speaker = new GLCylinderClosed(Parts, style, GLCylinderClosed.BACK
-				| GLCylinderClosed.CYLINDER, 0.5f, 0.2f);
+				| GLCylinderClosed.CYLINDER, 0.5f, 0.2f, true);
 		speaker.setColor(GLCylinderClosed.BACK, 0.5f, 0.5f, 0.5f);
 		speaker.setColor(GLCylinderClosed.CYLINDER, 0.1f, 0.1f, 0.1f);
 		speaker.size[2] = 0.05f;
@@ -44,7 +44,8 @@ public class GLBox extends GLFigure {
 	protected void onDraw(GL10 gl) {
 		gl.glEnable(GL10.GL_CULL_FACE);
 		cube.draw(gl);
-		plate.draw(gl);
+		if (style == STYLE_PLANE)
+			plate.draw(gl);
 		gl.glDisable(GL10.GL_CULL_FACE);
 		speaker.position[1] = 0.25f;
 		speaker.size[2] = 0.05f + (volume / 100 - 0.5f) * 0.1f;
@@ -66,7 +67,8 @@ public class GLBox extends GLFigure {
 		}
 		if ((surface & SPEAKER) != 0) {
 			speaker.setTexture(GLCylinderClosed.CYLINDER, b);
-			speaker.color[0] = speaker.color[1] = speaker.color[2] = 1;
+			speaker.setColor(GLCylinderClosed.CYLINDER, brightness, brightness,
+					brightness);
 		}
 	}
 

@@ -26,10 +26,10 @@ public class GLCylinder extends GLFigure {
 	}
 
 	public GLCylinder(int parts, int style) {
-		this(parts, 1.0f, 1.0f, style);
+		this(parts, 1.0f, 1.0f, style, false);
 	}
 
-	public GLCylinder(int parts, float radiusFront, float radiusBack, int style) {
+	public GLCylinder(int parts, float radiusFront, float radiusBack, int style, boolean invert) {
 		super(style);
 		vertex = new float[parts * 6 + 12];
 		float[] normal = new float[parts * 6 + 12];
@@ -39,6 +39,10 @@ public class GLCylinder extends GLFigure {
 		float sinM = gegK/hyp;
 		float alpha = (float) Math.asin(sinM);
 		float cosM = (float) Math.cos(alpha);
+		if (invert){
+			cosM = -cosM;
+			sinM = -sinM;
+		}
 
 		// alle Punke für die obere und untere Platte des Zylinders
 		for (int i = 0; i <= parts; i++) {

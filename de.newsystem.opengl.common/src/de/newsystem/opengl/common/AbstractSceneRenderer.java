@@ -1,8 +1,6 @@
 package de.newsystem.opengl.common;
 
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -15,11 +13,13 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import de.newsystem.opengl.common.fibures.GLFigure;
-import de.newsystem.opengl.common.fibures.GLQuaternion;
 import de.newsystem.opengl.common.fibures.GLSquare;
+import de.newsystem.opengl.common.touchhandler.RotateSceneHandler;
+import de.newsystem.opengl.common.touchhandler.TouchSceneHandler;
 
 /**
  * The abstract scene renderer provides functionality to render a hole scene,
@@ -32,7 +32,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	/**
 	 * Use lighting in scene.
 	 */
-	public static final boolean USE_LIGHTING = true;
+	public static boolean useLighting = true;
 
 	/**
 	 * Current scene object.
@@ -40,16 +40,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	public GLFigure scene;
 
 	/**
-	 * Bounds for scene translation: x_max = 0, x_min = 1, y_max = 2, y_min = 3,
-	 * z_max = 4, z_min = 5.
-	 */
-	protected float[] translateSceneBounds = new float[] { 5, -5, 5, -5, 0, -50 };
-
-	/**
 	 * The texture map holds all textures to avoid double loading of one
 	 * texture.
 	 */
-	protected Map<Integer, Bitmap> textureMap;
+	protected SparseArray<Bitmap> textureMap;
 
 	public Thread glThread;
 	private boolean selectObject;
@@ -69,7 +63,8 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	public AbstractSceneRenderer(Context context) {
 		this.context = context;
 		scene = createScene();
-		touchSceneHandler = new RotateSceneHandler();
+		setTouchSceneHandler(new RotateSceneHandler());
+		setLighting(true);
 	}
 
 	/**
@@ -78,6 +73,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @return scene
 	 */
 	protected abstract GLFigure createScene();
+
+	protected void setLighting(boolean b) {
+		useLighting = b;
+	}
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
@@ -102,7 +101,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glLoadIdentity();
 		touchSceneHandler.glTransformScene(gl);
 		gl.glLineWidth(1);
-		if (USE_LIGHTING && !selectObject){
+		if (useLighting && !selectObject) {
 			gl.glEnable(GL10.GL_LIGHTING);
 		}
 		scene.draw(gl);
@@ -110,7 +109,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 
 	private void selectObject(GL10 gl, int selectX, int selectY) {
 		GLFigure.setFigureDrawMode(GLFigure.DRAW_MODE_PICK_ID);
-		if (USE_LIGHTING)
+		if (useLighting)
 			gl.glDisable(GL10.GL_LIGHTING);
 		renderScene(gl, 1, 1, 1);
 		int color = getColorAtPixel(gl, selectX, selectY);
@@ -127,7 +126,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		} else
 			onNoFigureTouched(gl);
 		GLFigure.setFigureDrawMode(GLFigure.DRAW_MODE_NORMAL);
-		if (USE_LIGHTING)
+		if (useLighting)
 			gl.glEnable(GL10.GL_LIGHTING);
 	}
 
@@ -204,28 +203,18 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 
-		if (USE_LIGHTING)
-			setupLight(gl);
-	}
-
-	private void setupLight(GL10 gl) {
-		// lighting
-		float lightAmbient[] = { 1.f, 1.f, 1.f, 1 };
-		float lightDiffuse[] = { 1.f, 1.f, 1, 1 };
-		float mat_specular[] = { 1, 1, 1, 1 };
-		float mat_shininess[] = { 5 };
+		// lighing
+		float matSpecular[] = { 1, 1, 1, 1 };
+		float matShininess[] = { 5 };
 		float matAmbient[] = { 1.f, 1.f, 1.f, 1 };
 		float matDiffuse[] = { 1.f, 1.f, 1, 1 };
 		float light_position[] = { 1, 1, 1, 1 };
-		gl.glMaterialfv(GL10.GL_FRONT, GL10.GL_SPECULAR, mat_specular, 0);
-		gl.glMaterialfv(GL10.GL_FRONT, GL10.GL_SHININESS, mat_shininess, 0);
+		gl.glMaterialfv(GL10.GL_FRONT, GL10.GL_SPECULAR, matSpecular, 0);
+		gl.glMaterialfv(GL10.GL_FRONT, GL10.GL_SHININESS, matShininess, 0);
 		gl.glMaterialfv(GL10.GL_FRONT, GL10.GL_AMBIENT, matAmbient, 0);
 		gl.glMaterialfv(GL10.GL_FRONT, GL10.GL_DIFFUSE, matDiffuse, 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, light_position, 0);
-		gl.glEnable(GL10.GL_LIGHTING);
 		gl.glEnable(GL10.GL_LIGHT0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
 	}
 
 	public void onTouchEvent(MotionEvent event) {
@@ -241,8 +230,8 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 */
 	protected Bitmap loadBitmap(int id) {
 		if (textureMap == null)
-			textureMap = new HashMap<Integer, Bitmap>();
-		if (textureMap.containsKey(id))
+			textureMap = new SparseArray<Bitmap>();
+		if (textureMap.indexOfKey(id) > 0)
 			return textureMap.get(id);
 		Matrix flip = new Matrix();
 		flip.postScale(1f, -1f);
@@ -318,183 +307,6 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		}
 		Bitmap sb = Bitmap.createBitmap(bt, w, h, Bitmap.Config.ARGB_8888);
 		return sb;
-	}
-
-	public interface TouchSceneHandler {
-
-		public void onTouchEvent(MotionEvent event);
-
-		public void onLoadBundle(Bundle bundle);
-
-		public void onSaveInstanceState(Bundle outState);
-
-		public void glTransformScene(GL10 gl);
-
-	}
-
-	public abstract class ZoomableSceneHandler implements TouchSceneHandler {
-
-		/**
-		 * Property name to save current zoom value.
-		 */
-		public static final String STATE_SCENE_TRANSLATE = "common.state.zoom";
-
-		private float div;
-		public float[] translateScene = new float[] { 0, 0, -10 };
-
-		@Override
-		public void onTouchEvent(MotionEvent event) {
-			// with two selections perform pinch zoom
-			if (event.getAction() == MotionEvent.ACTION_MOVE
-					&& event.getHistorySize() > 0
-					&& event.getPointerCount() == 2) {
-				float dx = event.getX(0) - event.getX(1);
-				float dy = event.getY(0) - event.getY(1);
-				float divn = (float) Math.sqrt(dx * dx + dy * dy);
-				if (div == 0) {
-					div = divn;
-					return;
-				}
-				translateScene[2] += Math.abs(translateScene[2]) * (divn - div) / 250;
-				translateScene[2] = Math.min(translateSceneBounds[4],
-						Math.max(translateSceneBounds[5], translateScene[2]));
-				div = divn;
-				return;
-			} else
-				div = 0;
-		}
-
-		@Override
-		public void glTransformScene(GL10 gl) {
-			gl.glTranslatef(translateScene[0], translateScene[1],
-					translateScene[2]);
-		}
-
-		@Override
-		public void onSaveInstanceState(Bundle outState) {
-			outState.putFloatArray(STATE_SCENE_TRANSLATE, translateScene);
-		}
-
-		@Override
-		public void onLoadBundle(Bundle bundle) {
-			if (bundle.containsKey(STATE_SCENE_TRANSLATE))
-				translateScene = bundle.getFloatArray(STATE_SCENE_TRANSLATE);
-		}
-
-	}
-
-	protected class TranslateSceneHandler extends ZoomableSceneHandler {
-
-		/**
-		 * Property name to save current x angle value.
-		 */
-		public static final String STATE_ANCX = "common.state.ancx";
-
-		/**
-		 * Property name to save current y angle value.
-		 */
-		public static final String STATE_ANCY = "common.state.ancy";
-
-		public float ancX = 70;
-		public float ancY = 0;
-
-		public TranslateSceneHandler() {
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public void onTouchEvent(MotionEvent event) {
-			super.onTouchEvent(event);
-			// with one selection rotate or move the scene
-			if (event.getAction() == MotionEvent.ACTION_MOVE
-					&& event.getHistorySize() > 0
-					&& event.getPointerCount() == 1) {
-				translateScene[0] += (event.getX() - event.getHistoricalX(event
-						.getHistorySize() - 1))
-						* 0.01f
-						* Math.abs(translateScene[2]);
-				translateScene[1] -= (event.getY() - event.getHistoricalY(event
-						.getHistorySize() - 1))
-						* 0.01f
-						* Math.abs(translateScene[2]);
-				translateScene[0] = Math.min(translateSceneBounds[0],
-						Math.max(translateSceneBounds[1], translateScene[0]));
-				translateScene[1] = Math.min(translateSceneBounds[2],
-						Math.max(translateSceneBounds[3], translateScene[1]));
-			}
-		}
-
-		@Override
-		public void glTransformScene(GL10 gl) {
-			super.glTransformScene(gl);
-			gl.glRotatef(ancX, 1, 0, 0);
-			gl.glRotatef(ancY, 0, 1, 0);
-		}
-
-		@Override
-		public void onSaveInstanceState(Bundle outState) {
-			super.onSaveInstanceState(outState);
-			outState.putFloat(STATE_ANCX, ancX);
-			outState.putFloat(STATE_ANCY, ancY);
-		}
-
-		@Override
-		public void onLoadBundle(Bundle bundle) {
-			super.onLoadBundle(bundle);
-			if (bundle.containsKey(STATE_ANCX))
-				ancX = bundle.getFloat(STATE_ANCX);
-			if (bundle.containsKey(STATE_ANCY))
-				ancY = bundle.getFloat(STATE_ANCY);
-		}
-	}
-
-	protected class RotateSceneHandler extends ZoomableSceneHandler {
-
-		/**
-		 * Property name to save current quaternion.
-		 */
-		public static final String STATE_QUATERNION = "common.state.quaternion";
-		
-		private GLQuaternion quaternion;
-
-		public RotateSceneHandler() {
-			quaternion = new GLQuaternion();
-		}
-
-		@Override
-		public void onTouchEvent(MotionEvent event) {
-			super.onTouchEvent(event);
-			if (event.getAction() == MotionEvent.ACTION_MOVE
-					&& event.getHistorySize() > 0
-					&& event.getPointerCount() == 1) {
-				float x = (event.getX() - event.getHistoricalX(event
-						.getHistorySize() - 1));
-				float y = (event.getY() - event.getHistoricalY(event
-						.getHistorySize() - 1));
-				float angle = (float) Math.sqrt(x * x + y * y) / 40;
-				quaternion.rotateByAngleAxis(angle, y, x, 0);
-			}
-		}
-
-		@Override
-		public void onLoadBundle(Bundle bundle) {
-			super.onLoadBundle(bundle);
-			if (bundle.containsKey(STATE_QUATERNION))
-				quaternion.loadArray(bundle.getFloatArray(STATE_QUATERNION));
-		}
-
-		@Override
-		public void onSaveInstanceState(Bundle outState) {
-			super.onSaveInstanceState(outState);
-			outState.putFloatArray(STATE_QUATERNION, quaternion.toArray());
-		}
-
-		@Override
-		public void glTransformScene(GL10 gl) {
-			super.glTransformScene(gl);
-			quaternion.glRotate(gl);
-		}
-
 	}
 
 }

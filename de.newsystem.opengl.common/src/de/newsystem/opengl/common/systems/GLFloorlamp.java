@@ -20,7 +20,7 @@ public class GLFloorlamp extends GLSwitch {
 		super(style);
 		bottom = new GLCube(style);
 		light = new GLCube(style);
-		pillar = new GLCylinder(7, 0.2f, 0.2f, style);
+		pillar = new GLCylinder(7, 0.2f, 0.2f, style, false);
 
 		bottom.size[1] = 0.2f;
 		bottom.size[0] = bottom.size[2] = light.size[0] = light.size[2] = 0.5f;

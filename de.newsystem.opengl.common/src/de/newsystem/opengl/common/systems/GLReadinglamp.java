@@ -16,7 +16,7 @@ public class GLReadinglamp extends GLSwitch {
 		bottom = new GLBall(style, 20);
 		bottom.position[1] = 0.5f;
 
-		top = new GLCylinder(20, 0.3f, 0.6f, style);
+		top = new GLCylinder(20, 0.3f, 0.6f, style, false);
 		top.rotation.rotateByAngleAxis(-Math.PI/2, 1, 0, 0);
 		top.position[1] = 1.2f;
 		top.size[2] = 0.8f;
@@ -34,14 +34,14 @@ public class GLReadinglamp extends GLSwitch {
 	public void setSwitch(boolean on) {
 		super.setSwitch(on);
 		if (on) {
-			bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.8f;
+			bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.9f;
 			top.color[0] = top.color[1] = top.color[2] = 0.9f;
 			light.color[0] = light.color[1] = 1;
 			light.color[2] = 0.7f;
 		} else {
-			bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.6f;
-			light.color[0] = light.color[1] = light.color[2] = 0.7f;
-			top.color[0] = top.color[1] = top.color[2] = 0.7f;
+			bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.5f;
+			light.color[0] = light.color[1] = light.color[2] = 0.5f;
+			top.color[0] = top.color[1] = top.color[2] = 0.6f;
 		}
 
 	}

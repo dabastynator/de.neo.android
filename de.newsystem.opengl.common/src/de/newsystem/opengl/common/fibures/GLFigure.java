@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.microedition.khronos.opengles.GL10;
+
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
+import de.newsystem.opengl.common.AbstractSceneRenderer;
 
 /**
  * The GLFigure provides basically functionality for geometric objects like
@@ -86,7 +89,9 @@ public abstract class GLFigure {
 	 * Color
 	 */
 	public float[] color = { 1, 1, 1, 1 };
-
+	private float[] lightAmb = new float[4];
+	private float[] lightDif = new float[4];
+	private float[] lightSpe = new float[4];
 	/**
 	 * Textrue
 	 */
@@ -104,7 +109,7 @@ public abstract class GLFigure {
 	 */
 	private GLClickListener listener;
 
-	private int style;
+	protected int style;
 
 	/**
 	 * allocate new gl figure, it will be registered in a list of all figures.
@@ -132,9 +137,20 @@ public abstract class GLFigure {
 		// Textur setzen falls eine vorhanden ist
 		if (texture != null && draw_mode == DRAW_MODE_NORMAL)
 			setTexture(gl);
-		if (draw_mode == DRAW_MODE_NORMAL)
-			gl.glColor4f(color[0], color[1], color[2], color[3]);
-		else {
+		if (draw_mode == DRAW_MODE_NORMAL) {
+			if (!AbstractSceneRenderer.useLighting)
+				gl.glColor4f(color[0], color[1], color[2], color[3]);
+			else {
+				for (int i = 0; i < 4; i++) {
+					lightAmb[i] = color[i] * 0.4f;
+					lightDif[i] = color[i] * 0.8f;
+					lightSpe[i] = Math.min(color[i] * 1.2f, 1);
+				}
+				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmb, 0);
+				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDif, 0);
+				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR, lightSpe, 0);
+			}
+		} else {
 			float r = ((float) id % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
 			float g = ((float) (id / IDS_PER_COLOR) % IDS_PER_COLOR)
 					/ (IDS_PER_COLOR - 1);
