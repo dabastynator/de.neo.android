@@ -1,7 +1,10 @@
-package de.neo.opengl.common.figures;
+package de.neo.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import de.neo.opengl.common.figures.GLFigure;
+import de.neo.opengl.common.figures.GLSquare;
+import de.neo.opengl.common.figures.GLFigure.GLClickListener;
 import android.graphics.Bitmap;
 
 public class GLCube extends GLFigure {
@@ -13,7 +16,7 @@ public class GLCube extends GLFigure {
 	public static final int TOP = 16;
 	public static final int DOWN = 32;
 
-	private GLSquare[] squares;
+	protected GLSquare[] squares;
 	private int style;
 
 	public int getStyle() {

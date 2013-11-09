@@ -4,7 +4,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 import de.neo.opengl.common.figures.GLBoxplate;
-import de.neo.opengl.common.figures.GLCube;
 import de.neo.opengl.common.figures.GLFigure;
 
 public class GLBox extends GLFigure {

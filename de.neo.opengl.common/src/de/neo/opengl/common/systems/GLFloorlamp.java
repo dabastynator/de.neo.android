@@ -3,7 +3,6 @@ package de.neo.opengl.common.systems;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.neo.opengl.common.figures.GLCube;
 import de.neo.opengl.common.figures.GLCylinder;
 
 public class GLFloorlamp extends GLSwitch {

@@ -26,8 +26,8 @@ public class GLSquare extends GLFigure {
 
 	protected float normals[] = { 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1 };
 
-	protected float textureCoordinates[] = { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f };
+	protected float textureCoordinates[] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f };
 
 	private short[] indices_plane = { 0, 1, 2, 0, 2, 3 };
 

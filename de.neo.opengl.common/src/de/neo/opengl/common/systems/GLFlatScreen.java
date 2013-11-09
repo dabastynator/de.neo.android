@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import de.neo.opengl.common.figures.GLCube;
 import de.neo.opengl.common.figures.GLSquare;
 
 public class GLFlatScreen extends GLSwitch {

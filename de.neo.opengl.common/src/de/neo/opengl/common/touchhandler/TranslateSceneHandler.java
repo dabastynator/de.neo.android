@@ -51,17 +51,17 @@ public class TranslateSceneHandler extends ZoomableSceneHandler {
 		}
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (duration < 400 && duration > MIN_TOUCH_DURATION) {
-				slideX = deltaX / 2;
-				slideY = deltaY / 2;
+				slideX = deltaX;
+				slideY = deltaY;
 			}
 		}
 		if (event.getAction() == MotionEvent.ACTION_MOVE
 				&& event.getHistorySize() > 0) {
 			if (event.getPointerCount() == 1 && duration > MIN_TOUCH_DURATION) {
 				deltaX = (event.getX() - event.getHistoricalX(event
-						.getHistorySize() - 1)) * 0.007f * Math.abs(zoom);
+						.getHistorySize() - 1)) * 0.004f * Math.abs(zoom);
 				deltaY = (event.getY() - event.getHistoricalY(event
-						.getHistorySize() - 1)) * 0.007f * Math.abs(zoom);
+						.getHistorySize() - 1)) * 0.004f * Math.abs(zoom);
 				translateScene[0] += deltaX;
 				translateScene[1] += deltaY;
 				translateScene[0] = Math.min(translateSceneBounds[0],
@@ -94,9 +94,9 @@ public class TranslateSceneHandler extends ZoomableSceneHandler {
 		}
 		gl.glTranslatef(translateScene[0], translateScene[2], translateScene[1]);
 		float[] toCenter = new float[] {
-				(translateSceneBounds[0] + translateSceneBounds[1]) / 2,
-				(translateSceneBounds[2] + translateSceneBounds[3]) / 2,
-				(translateSceneBounds[4] + translateSceneBounds[5]) / 2 };
+				(translateSceneBounds[0] + translateSceneBounds[1]) / 3,
+				(translateSceneBounds[2] + translateSceneBounds[3]) / 3,
+				(translateSceneBounds[4] + translateSceneBounds[5]) / 3 };
 		gl.glTranslatef(-toCenter[0], -toCenter[2], -toCenter[1]);
 		plateRotation.glRotate(gl);
 		gl.glTranslatef(toCenter[0], toCenter[2], toCenter[1]);
