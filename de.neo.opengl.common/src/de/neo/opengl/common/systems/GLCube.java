@@ -2,10 +2,9 @@ package de.neo.opengl.common.systems;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Bitmap;
 import de.neo.opengl.common.figures.GLFigure;
 import de.neo.opengl.common.figures.GLSquare;
-import de.neo.opengl.common.figures.GLFigure.GLClickListener;
-import android.graphics.Bitmap;
 
 public class GLCube extends GLFigure {
 

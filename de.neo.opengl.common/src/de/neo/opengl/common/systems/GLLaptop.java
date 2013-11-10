@@ -13,7 +13,6 @@ public class GLLaptop extends GLFigure {
 
 	private GLCube keyboard;
 	private GLCube display;
-	private float angle;
 	private GLQuaternion q = new GLQuaternion();
 
 	public GLLaptop(int style, float angle) {
@@ -21,7 +20,6 @@ public class GLLaptop extends GLFigure {
 		keyboard = new GLCube(style);
 		initKeyboard();
 		display = new GLCube(style);
-		this.angle = angle;
 		q.rotateByAngleAxis(-angle, 1, 0, 0);
 		initDisplay();
 	}
@@ -41,7 +39,7 @@ public class GLLaptop extends GLFigure {
 	private void init(GLCube cube) {
 		cube.size[0] = 1;
 		cube.size[1] = 0.05f;
-		cube.size[2] = 0.7f;
+		cube.size[2] = 0.6f;
 		cube.position[2] = cube.size[2] / 2;
 	}
 
@@ -55,6 +53,12 @@ public class GLLaptop extends GLFigure {
 			keyboard.squares[3].color[i] = 0;
 			keyboard.squares[5].color[i] = 0;
 		}
+	}
+
+	@Override
+	public void setOnClickListener(GLClickListener listener) {
+		keyboard.setOnClickListener(listener);
+		display.setOnClickListener(listener);
 	}
 
 	public void setTexture(int surface, Bitmap b) {
