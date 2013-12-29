@@ -3,6 +3,7 @@ package de.neo.opengl.common.touchhandler;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public abstract class ZoomableSceneHandler extends AbstractSceneHandler {
@@ -25,7 +26,7 @@ public abstract class ZoomableSceneHandler extends AbstractSceneHandler {
 	public void onTouchEvent(MotionEvent event) {
 		// with two selections perform pinch zoom
 		if (event.getAction() == MotionEvent.ACTION_MOVE
-				&& event.getHistorySize() > 0 && event.getPointerCount() == 2) {
+				&& event.getPointerCount() == 2) {
 			float dx = event.getX(0) - event.getX(1);
 			float dy = event.getY(0) - event.getY(1);
 			float divn = (float) Math.sqrt(dx * dx + dy * dy);
