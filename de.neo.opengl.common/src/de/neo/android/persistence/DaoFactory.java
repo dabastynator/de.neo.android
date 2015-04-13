@@ -3,15 +3,13 @@ package de.neo.android.persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Context;
-
 public class DaoFactory {
 
 	private static DaoFactory mSingelton;
 
-	public static DaoFactory initiate(Context context, DaoCreator creator) {
+	public static DaoFactory initiate(DaoBuilder builder) {
 		if (mSingelton == null) {
-			mSingelton = new DaoFactory(context, creator);
+			mSingelton = new DaoFactory(builder);
 			for (Dao<?> dao : mSingelton.mMapClassDao.values()) {
 				if (dao instanceof DatabaseDao<?>) {
 					((DatabaseDao<?>) dao).initDependencyFields();
@@ -23,7 +21,8 @@ public class DaoFactory {
 
 	public static void finilize() {
 		if (mSingelton != null) {
-			mSingelton.mDatabase.close();
+			if (mSingelton.mDatabase != null)
+				mSingelton.mDatabase.close();
 			mSingelton = null;
 		}
 	}
@@ -38,9 +37,9 @@ public class DaoFactory {
 	protected Map<Class<?>, Dao<?>> mMapClassDao;
 	private NeoDataBase mDatabase;
 
-	private DaoFactory(Context context, DaoCreator creator) {
+	private DaoFactory(DaoBuilder builder) {
 		mMapClassDao = new HashMap<Class<?>, Dao<?>>();
-		creator.createDaos(mMapClassDao);
+		builder.mDaoMapFilling.createDaos(mMapClassDao, builder);
 	}
 
 	@SuppressWarnings("unchecked")

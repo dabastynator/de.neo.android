@@ -45,26 +45,25 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 	protected Map<Long, T> mCache;
 
 	@SuppressLint("UseSparseArrays")
-	public DatabaseDao(NeoDataBase sqlLite, Class<T> domainClass,
-			PersistentFieldCreator fieldCreator) {
+	public DatabaseDao(Class<T> domainClass, DaoBuilder builder) {
 		mPersistentFields = new ArrayList<PersistentField>();
 		mCache = new HashMap<Long, T>();
-		mSqlLite = sqlLite;
+		mSqlLite = builder.getDatabase();
 		mDomainClass = domainClass;
 		mTableName = domainClass.getSimpleName().toUpperCase(Locale.US);
 		checkDomainClass();
-		initFields(fieldCreator);
-		if (sqlLite.doDelete()) {
-			SQLiteDatabase db = sqlLite.getWritableDatabase();
+		initFields(builder.getPersistentFieldBuilder());
+		if (mSqlLite.doDelete()) {
+			SQLiteDatabase db = mSqlLite.getWritableDatabase();
 			deleteTable(db);
 			db.close();
 		}
-		if (sqlLite.doCreate()) {
-			SQLiteDatabase db = sqlLite.getWritableDatabase();
+		if (mSqlLite.doCreate()) {
+			SQLiteDatabase db = mSqlLite.getWritableDatabase();
 			createTable(db);
 			db.close();
 		}
-		sqlLite.getDaoList().add(this);
+		mSqlLite.getDaoList().add(this);
 	}
 
 	private void checkDomainClass() {
@@ -82,7 +81,7 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 		}
 	}
 
-	private void initFields(PersistentFieldCreator fieldCreator) {
+	private void initFields(DaoBuilder.PersistentFieldBuilder fieldCreator) {
 		mPersistentFields.clear();
 		for (Field field : mDomainClass.getDeclaredFields()) {
 			PersistentField pField = fieldCreator.createPersistentField(field,
