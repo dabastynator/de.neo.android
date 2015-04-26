@@ -32,6 +32,13 @@ public interface Dao<T> {
 	public T loadById(long id) throws DaoException;
 
 	/**
+	 * Count all items
+	 * 
+	 * @throws DaoException
+	 */
+	public long count() throws DaoException;
+
+	/**
 	 * Save the new item, set and return the generated id.
 	 * 
 	 * @param item

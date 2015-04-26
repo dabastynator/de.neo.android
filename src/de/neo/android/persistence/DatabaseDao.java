@@ -226,4 +226,18 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 		mCache.clear();
 	}
 
+	protected long count(String where, String[] parameter) {
+		SQLiteDatabase db = mSqlLite.getReadableDatabase();
+		Cursor c = db.query(mTableName, null, where, parameter, null, null,
+				null);
+		long result = c.getCount();
+		c.close();
+		return result;
+	}
+
+	@Override
+	public long count() throws DaoException {
+		return count(null, null);
+	}
+
 }

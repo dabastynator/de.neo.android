@@ -47,4 +47,8 @@ public class DaoFactory {
 		return (Dao<T>) mMapClassDao.get(domain);
 	}
 
+	public Object getCustomDao(Class<?> domain) {
+		return mMapClassDao.get(domain);
+	}
+
 }
