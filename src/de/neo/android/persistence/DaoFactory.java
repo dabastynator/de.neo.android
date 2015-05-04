@@ -8,12 +8,11 @@ public class DaoFactory {
 	private static DaoFactory mSingelton;
 
 	public static DaoFactory initiate(DaoBuilder builder) {
-		if (mSingelton == null) {
-			mSingelton = new DaoFactory(builder);
-			for (Dao<?> dao : mSingelton.mMapClassDao.values()) {
-				if (dao instanceof DatabaseDao<?>) {
-					((DatabaseDao<?>) dao).initDependencyFields();
-				}
+		finilize();
+		mSingelton = new DaoFactory(builder);
+		for (Dao<?> dao : mSingelton.mMapClassDao.values()) {
+			if (dao instanceof DatabaseDao<?>) {
+				((DatabaseDao<?>) dao).initDependencyFields();
 			}
 		}
 		return mSingelton;

@@ -15,7 +15,8 @@ import de.neo.android.persistence.fields.PersistentDomainBase;
 import de.neo.android.persistence.fields.PersistentField;
 
 /**
- * The AbstractDatabaseDao implements the basic dao functionality.
+ * The DatabaseDao implements the basic dao functionality with sqlite database
+ * access.
  * 
  * @author sebastian
  * 
@@ -73,7 +74,7 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 				dummyDomain.getClass();
 			} catch (ClassCastException e) {
 				throw new IllegalStateException(
-						"Domain class must have public constructor without parameter");
+						"Domain class must be instance of generic class");
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(
@@ -143,39 +144,51 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 
 	protected List<T> loadByWhereClausel(String where, String[] values,
 			String orderBy, String limit) throws DaoException {
-		SQLiteDatabase db = mSqlLite.getReadableDatabase();
-		List<T> items = new ArrayList<T>();
-		Cursor cursor = db.query(mTableName, mFieldsPlusId, where, values,
-				null, null, orderBy, limit);
-		while (cursor.moveToNext()) {
-			int id = cursor.getInt(0);
-			if (mCache.containsKey(id))
-				items.add(mCache.get(id));
-			else {
-				T item = loadItemByCurser(cursor);
-				item.setId(id);
-				items.add(item);
-				mCache.put((long) id, item);
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getReadableDatabase();
+			List<T> items = new ArrayList<T>();
+			Cursor cursor = db.query(mTableName, mFieldsPlusId, where, values,
+					null, null, orderBy, limit);
+			while (cursor.moveToNext()) {
+				int id = cursor.getInt(0);
+				if (mCache.containsKey(id))
+					items.add(mCache.get(id));
+				else {
+					T item = loadItemByCurser(cursor);
+					item.setId(id);
+					items.add(item);
+					mCache.put((long) id, item);
+				}
 			}
+			return items;
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
 		}
-		db.close();
-		return items;
 	}
 
 	@Override
 	public T loadById(long id) throws DaoException {
 		if (mCache.containsKey(id))
 			return mCache.get(id);
-		SQLiteDatabase db = mSqlLite.getReadableDatabase();
-		Cursor cursor = db.query(mTableName, mFieldsPlusId, WHERE_ID,
-				new String[] { id + "" }, null, null, null);
-		T item = null;
-		if (cursor.moveToNext()) {
-			item = loadItemByCurser(cursor);
-			item.setId(id);
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getReadableDatabase();
+			Cursor cursor = db.query(mTableName, mFieldsPlusId, WHERE_ID,
+					new String[] { id + "" }, null, null, null);
+			T item = null;
+			if (cursor.moveToNext()) {
+				item = loadItemByCurser(cursor);
+				item.setId(id);
+			}
+			return item;
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
 		}
-		db.close();
-		return item;
 	}
 
 	protected ContentValues getContentValues(T item) throws DaoException {
@@ -193,46 +206,77 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 
 	@Override
 	public long save(T item) throws DaoException {
-		SQLiteDatabase db = mSqlLite.getWritableDatabase();
-		long id = db.insert(mTableName, null, getContentValues(item));
-		db.close();
-		item.setId(id);
-		mCache.put(id, item);
-		return id;
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getWritableDatabase();
+			long id = db.insert(mTableName, null, getContentValues(item));
+			item.setId(id);
+			mCache.put(id, item);
+			return id;
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
+		}
 	}
 
 	@Override
 	public void update(T item) throws DaoException {
-		SQLiteDatabase db = mSqlLite.getWritableDatabase();
-		db.update(mTableName, getContentValues(item), WHERE_ID,
-				new String[] { item.getId() + "" });
-		mCache.put(item.getId(), item);
-		db.close();
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getWritableDatabase();
+			db.update(mTableName, getContentValues(item), WHERE_ID,
+					new String[] { item.getId() + "" });
+			mCache.put(item.getId(), item);
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
+		}
 	}
 
 	@Override
 	public void delete(long id) throws DaoException {
-		SQLiteDatabase db = mSqlLite.getWritableDatabase();
-		db.delete(mTableName, WHERE_ID, new String[] { id + "" });
-		db.close();
-		mCache.remove(id);
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getWritableDatabase();
+			db.delete(mTableName, WHERE_ID, new String[] { id + "" });
+			mCache.remove(id);
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
+		}
 	}
 
 	@Override
 	public void deleteAll() throws DaoException {
-		SQLiteDatabase db = mSqlLite.getWritableDatabase();
-		db.delete(mTableName, null, null);
-		db.close();
-		mCache.clear();
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getWritableDatabase();
+			db.delete(mTableName, null, null);
+			mCache.clear();
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
+		}
 	}
 
-	protected long count(String where, String[] parameter) {
-		SQLiteDatabase db = mSqlLite.getReadableDatabase();
-		Cursor c = db.query(mTableName, null, where, parameter, null, null,
-				null);
-		long result = c.getCount();
-		c.close();
-		return result;
+	protected long count(String where, String[] parameter) throws DaoException {
+		SQLiteDatabase db = null;
+		try {
+			db = mSqlLite.getReadableDatabase();
+			Cursor c = db.query(mTableName, null, where, parameter, null, null,
+					null);
+			long result = c.getCount();
+			c.close();
+			return result;
+		} catch (Exception e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+			db.close();
+		}
 	}
 
 	@Override
