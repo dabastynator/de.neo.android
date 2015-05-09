@@ -1,7 +1,6 @@
 package de.neo.android.opengl.systems;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -19,7 +18,7 @@ public class GLGroup extends GLFigure {
 
 	public GLGroup() {
 		super(STYLE_PLANE);
-		children = Collections.synchronizedList(new ArrayList<GLFigure>());
+		children = new ArrayList<GLFigure>();
 	}
 
 	@Override
