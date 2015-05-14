@@ -16,11 +16,11 @@ public class PersistentDomainBase extends PersistentField {
 
 	public PersistentDomainBase(Field field, int columnIndex) {
 		super(field, columnIndex);
-		databaseDescription = DatabaseDao.TYPE_INTEGER_SQL;
+		mDatabaseDescription = DatabaseDao.TYPE_INTEGER_SQL;
 	}
 
 	public void init() {
-		dao = DaoFactory.getInstance().getDao(field.getType());
+		dao = DaoFactory.getInstance().getDao(mField.getType());
 		if (dao == null)
 			throw new IllegalArgumentException(
 					"Field type must has a dao in the daofactory.");
@@ -30,19 +30,19 @@ public class PersistentDomainBase extends PersistentField {
 	public void setValueToDomain(Object domain, Cursor cursor)
 			throws IllegalAccessException, IllegalArgumentException,
 			DaoException {
-		int id = cursor.getInt(columnIndex);
+		int id = cursor.getInt(mColumnIndex);
 		Object domainObject = dao.loadById(id);
-		field.set(domain, domainObject);
+		mField.set(domain, domainObject);
 	}
 
 	@Override
 	public void setValueToDatabase(Object domain, ContentValues values)
 			throws IllegalAccessException, IllegalArgumentException {
-		DomainBase domainObject = (DomainBase) field.get(domain);
+		DomainBase domainObject = (DomainBase) mField.get(domain);
 		if (domainObject != null)
-			values.put(columnName, domainObject.getId());
+			values.put(mColumnName, domainObject.getId());
 		else
-			values.put(columnName, -1);
+			values.put(mColumnName, -1);
 	}
 
 }

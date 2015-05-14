@@ -11,28 +11,28 @@ public class PersistentDate extends PersistentField {
 
 	public PersistentDate(Field field, int columnIndex) {
 		super(field, columnIndex);
-		databaseDescription = DatabaseDao.TYPE_TEXT_SQL;
+		mDatabaseDescription = DatabaseDao.TYPE_TEXT_SQL;
 	}
 
 	@Override
 	public void setValueToDomain(Object domain, Cursor cursor)
 			throws IllegalAccessException, IllegalArgumentException {
-		String value = cursor.getString(columnIndex);
+		String value = cursor.getString(mColumnIndex);
 		if (value != null && value.length() > 0) {
 			Date date = new Date(Long.parseLong(value));
-			field.set(domain, date);
+			mField.set(domain, date);
 		} else
-			field.set(domain, null);
+			mField.set(domain, null);
 	}
 
 	@Override
 	public void setValueToDatabase(Object domain, ContentValues values)
 			throws IllegalAccessException, IllegalArgumentException {
-		Date date = (Date) field.get(domain);
+		Date date = (Date) mField.get(domain);
 		if (date != null)
-			values.put(columnName, date.getTime() + "");
+			values.put(mColumnName, date.getTime() + "");
 		else
-			values.put(columnName, "");
+			values.put(mColumnName, "");
 	}
 
 }

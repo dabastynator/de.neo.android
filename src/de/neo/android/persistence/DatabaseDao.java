@@ -100,10 +100,10 @@ public class DatabaseDao<T extends DomainBase> implements Dao<T> {
 		mFieldsPlusId[0] = FIELD_ID;
 		for (int i = 0; i < mPersistentFields.size(); i++) {
 			PersistentField field = mPersistentFields.get(i);
-			mFieldsPlusId[i + 1] = field.columnName;
+			mFieldsPlusId[i + 1] = field.mColumnName;
 			if (i > 0)
 				createFields += ", ";
-			createFields += field.columnName + " " + field.databaseDescription;
+			createFields += field.mColumnName + " " + field.mDatabaseDescription;
 		}
 		mCreateTable = "CREATE TABLE " + mTableName + " ( " + FIELD_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + createFields + " )";

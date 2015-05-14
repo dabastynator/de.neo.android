@@ -14,27 +14,27 @@ public class PersistentEnum extends PersistentField {
 		super(field, columnIndex);
 		if (!enumeration.isEnum())
 			throw new IllegalArgumentException("class must be enumeration.");
-		databaseDescription = DatabaseDao.TYPE_INTEGER_SQL;
+		mDatabaseDescription = DatabaseDao.TYPE_INTEGER_SQL;
 		this.enumeration = enumeration;
 	}
 
 	@Override
 	public void setValueToDomain(Object domain, Cursor cursor)
 			throws IllegalAccessException, IllegalArgumentException {
-		int ordinal = cursor.getInt(columnIndex);
+		int ordinal = cursor.getInt(mColumnIndex);
 		Object value = null;
 		if (ordinal > -1)
 			value = enumeration.getEnumConstants()[ordinal];
-		field.set(domain, value);
+		mField.set(domain, value);
 	}
 
 	@Override
 	public void setValueToDatabase(Object domain, ContentValues values)
 			throws IllegalAccessException, IllegalArgumentException {
-		Object value = field.get(domain);
+		Object value = mField.get(domain);
 		int ordinal = -1;
 		if (value != null)
 			ordinal = ((Enum<?>) value).ordinal();
-		values.put(columnName, ordinal);
+		values.put(mColumnName, ordinal);
 	}
 }

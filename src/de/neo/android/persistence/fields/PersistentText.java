@@ -10,20 +10,20 @@ public class PersistentText extends PersistentField {
 
 	public PersistentText(Field field, int columnIndex) {
 		super(field, columnIndex);
-		databaseDescription = DatabaseDao.TYPE_TEXT_SQL;
+		mDatabaseDescription = DatabaseDao.TYPE_TEXT_SQL;
 	}
 
 	@Override
 	public void setValueToDomain(Object domain, Cursor cursor)
 			throws IllegalAccessException, IllegalArgumentException {
-		field.set(domain, cursor.getString(columnIndex));
+		mField.set(domain, cursor.getString(mColumnIndex));
 	}
 
 	@Override
 	public void setValueToDatabase(Object domain, ContentValues values)
 			throws IllegalAccessException, IllegalArgumentException {
-		String str = (String) field.get(domain);
-		values.put(columnName, str);
+		String str = (String) mField.get(domain);
+		values.put(mColumnName, str);
 	}
 
 }

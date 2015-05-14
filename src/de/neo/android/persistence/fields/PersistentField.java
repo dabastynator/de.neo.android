@@ -8,23 +8,22 @@ import android.database.Cursor;
 import de.neo.android.persistence.DaoException;
 
 public abstract class PersistentField {
-	public String databaseDescription;
-	public String columnName;
-	protected int columnIndex;
-	protected Field field;
+	public String mDatabaseDescription;
+	public String mColumnName;
+	protected int mColumnIndex;
+	protected Field mField;
 
 	public PersistentField(Field field, int columnIndex) {
-		this.field = field;
+		this.mField = field;
 		field.setAccessible(true);
-		this.columnIndex = columnIndex;
-		this.columnName = field.getName().toUpperCase(Locale.US);
+		this.mColumnIndex = columnIndex;
+		this.mColumnName = field.getName().toUpperCase(Locale.US);
 	}
 
 	public abstract void setValueToDomain(Object domain, Cursor cursor)
 			throws IllegalAccessException, IllegalArgumentException,
 			DaoException;
 
-	public abstract void setValueToDatabase(Object domain,
-			ContentValues values) throws IllegalAccessException,
-			IllegalArgumentException;
+	public abstract void setValueToDatabase(Object domain, ContentValues values)
+			throws IllegalAccessException, IllegalArgumentException;
 }

@@ -7,9 +7,13 @@ import java.util.Map;
 import de.neo.android.persistence.fields.PersistentBoolean;
 import de.neo.android.persistence.fields.PersistentDate;
 import de.neo.android.persistence.fields.PersistentDomainBase;
+import de.neo.android.persistence.fields.PersistentDoubleArray;
 import de.neo.android.persistence.fields.PersistentEnum;
 import de.neo.android.persistence.fields.PersistentField;
 import de.neo.android.persistence.fields.PersistentInteger;
+import de.neo.android.persistence.fields.PersistentIntegerArray;
+import de.neo.android.persistence.fields.PersistentLong;
+import de.neo.android.persistence.fields.PersistentLongArray;
 import de.neo.android.persistence.fields.PersistentText;
 
 /**
@@ -89,6 +93,12 @@ public class DaoBuilder {
 		public PersistentField createPersistentField(Field field, int number) {
 			if (field.getType().equals(int.class))
 				return new PersistentInteger(field, number);
+			if (field.getType().equals(int[].class))
+				return new PersistentIntegerArray(field, number);
+			if (field.getType().equals(long.class))
+				return new PersistentLong(field, number);
+			if (field.getType().equals(long[].class))
+				return new PersistentLongArray(field, number);
 			if (field.getType().equals(boolean.class))
 				return new PersistentBoolean(field, number);
 			if (field.getType().isEnum())
@@ -97,6 +107,8 @@ public class DaoBuilder {
 				return new PersistentDate(field, number);
 			if (field.getType().equals(String.class))
 				return new PersistentText(field, number);
+			if (field.getType().equals(double[].class))
+				return new PersistentDoubleArray(field, number);
 			if (DomainBase.class.isAssignableFrom(field.getType()))
 				return new PersistentDomainBase(field, number);
 			return null;
