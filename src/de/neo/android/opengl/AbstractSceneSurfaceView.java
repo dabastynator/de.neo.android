@@ -37,12 +37,8 @@ public class AbstractSceneSurfaceView extends GLSurfaceView {
 					&& (Math.abs(event.getY() - mDownY) < 8)) {
 				mRenderer.selectFigure((int) event.getX(), (int) event.getY(),
 						this);
-				mRenderer.setLongClick(mMouseDownTime > 500);
-			} else if ((Math.abs(event.getX() - mDownX) < 12)
-					&& (Math.abs(event.getY() - mDownY) < 12)) {
-				mRenderer.selectFigure((int) event.getX(), (int) event.getY(),
-						this);
-				mRenderer.setLongClick(mMouseDownTime > 500);
+				mRenderer.setLongClick(System.currentTimeMillis()
+						- mMouseDownTime > 500);
 			}
 		}
 		return true;
