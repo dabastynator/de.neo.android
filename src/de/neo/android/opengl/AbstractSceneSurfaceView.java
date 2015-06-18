@@ -9,8 +9,9 @@ import de.neo.android.opengl.figures.GLFigure;
 public class AbstractSceneSurfaceView extends GLSurfaceView {
 
 	private AbstractSceneRenderer mRenderer;
-	private float downX;
-	private float downY;
+	private float mDownX;
+	private float mDownY;
+	private long mMouseDownTime;
 
 	public AbstractSceneSurfaceView(Context context, Bundle savedInstanceState,
 			AbstractSceneRenderer renderer) {
@@ -27,14 +28,21 @@ public class AbstractSceneSurfaceView extends GLSurfaceView {
 		mRenderer.onTouchEvent(event);
 		super.onTouchEvent(event);
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			downX = event.getX();
-			downY = event.getY();
+			mDownX = event.getX();
+			mDownY = event.getY();
+			mMouseDownTime = System.currentTimeMillis();
 		}
 		if (event.getAction() == MotionEvent.ACTION_UP) {
-			if ((Math.abs(event.getX() - downX) < 8)
-					&& (Math.abs(event.getY() - downY) < 8)) {
+			if ((Math.abs(event.getX() - mDownX) < 8)
+					&& (Math.abs(event.getY() - mDownY) < 8)) {
 				mRenderer.selectFigure((int) event.getX(), (int) event.getY(),
 						this);
+				mRenderer.setLongClick(mMouseDownTime > 500);
+			} else if ((Math.abs(event.getX() - mDownX) < 12)
+					&& (Math.abs(event.getY() - mDownY) < 12)) {
+				mRenderer.selectFigure((int) event.getX(), (int) event.getY(),
+						this);
+				mRenderer.setLongClick(mMouseDownTime > 500);
 			}
 		}
 		return true;

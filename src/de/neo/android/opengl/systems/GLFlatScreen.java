@@ -40,26 +40,26 @@ public class GLFlatScreen extends GLSwitch {
 	}
 
 	private void initPillar() {
-		pillar.size[0] = pillar.size[2] = 0.1f;
-		pillar.position[2] = -pillar.size[0] / 2 - 0.01f;
-		pillar.size[1] = screen.position[1];
-		pillar.position[1] = pillar.size[1] / 2;
-		pillar.setColor(bottom.color[0], bottom.color[1], bottom.color[2]);
+		pillar.mSize[0] = pillar.mSize[2] = 0.1f;
+		pillar.mPosition[2] = -pillar.mSize[0] / 2 - 0.01f;
+		pillar.mSize[1] = screen.mPosition[1];
+		pillar.mPosition[1] = pillar.mSize[1] / 2;
+		pillar.setColor(bottom.mColor[0], bottom.mColor[1], bottom.mColor[2]);
 	}
 
 	private void initBottom() {
-		bottom.size[0] = screenWidth * 0.5f;
-		bottom.size[1] = screenHeigh * 0.5f;
-		bottom.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
-		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.3f;
+		bottom.mSize[0] = screenWidth * 0.5f;
+		bottom.mSize[1] = screenHeigh * 0.5f;
+		bottom.mRotation.rotateByAngleAxis(Math.PI / 2, 1, 0, 0);
+		bottom.mColor[0] = bottom.mColor[1] = bottom.mColor[2] = 0.3f;
 	}
 
 	private void initScreen() {
-		screen.size[0] = screenWidth;
-		screen.size[1] = screenHeigh;
-		screen.position[1] = height - screenHeigh / 2;
-		screen.color[0] = screen.color[1] = screen.color[2] = 0;
-		screen.rotation.rotateByAngleAxis(-Math.PI, 1, 0, 0);
+		screen.mSize[0] = screenWidth;
+		screen.mSize[1] = screenHeigh;
+		screen.mPosition[1] = height - screenHeigh / 2;
+		screen.mColor[0] = screen.mColor[1] = screen.mColor[2] = 0;
+		screen.mRotation.rotateByAngleAxis(-Math.PI, 1, 0, 0);
 	}
 
 	@Override
@@ -75,6 +75,14 @@ public class GLFlatScreen extends GLSwitch {
 		screen.setOnClickListener(listener);
 		bottom.setOnClickListener(listener);
 		pillar.setOnClickListener(listener);
+	}
+
+	@Override
+	public void setOnLongClickListener(GLClickListener listener) {
+		super.setOnLongClickListener(listener);
+		screen.setOnLongClickListener(listener);
+		bottom.setOnLongClickListener(listener);
+		pillar.setOnLongClickListener(listener);
 	}
 
 	public void setSwitchTexture(int surface, Bitmap b, boolean switchState) {
@@ -104,7 +112,7 @@ public class GLFlatScreen extends GLSwitch {
 	public void setTexture(int surface, Bitmap b) {
 		if ((surface & SCREEN) != 0) {
 			if (b != null)
-				screen.color[0] = screen.color[1] = screen.color[2] = 1;
+				screen.mColor[0] = screen.mColor[1] = screen.mColor[2] = 1;
 			else
 				initScreen();
 			screen.setTexture(b);
@@ -112,7 +120,7 @@ public class GLFlatScreen extends GLSwitch {
 		if ((surface & BOTTOM) != 0) {
 			bottom.setTexture(b);
 			if (b != null)
-				bottom.color[0] = bottom.color[1] = bottom.color[2] = 1;
+				bottom.mColor[0] = bottom.mColor[1] = bottom.mColor[2] = 1;
 			else
 				initBottom();
 		}

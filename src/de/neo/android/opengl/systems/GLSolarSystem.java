@@ -14,10 +14,10 @@ public class GLSolarSystem extends GLFigure{
 	public GLSolarSystem(int style) {
 		super(style);
 		earth = new GLBall(style, 30);
-		earth.size[0] = earth.size[1] = earth.size[2] = 1; 
+		earth.mSize[0] = earth.mSize[1] = earth.mSize[2] = 1; 
 		moon = new GLBall(style, 30);
-		moon.size[0] = moon.size[1] = moon.size[2] = 0.5f;
-		moon.position[0] = 2.5f;
+		moon.mSize[0] = moon.mSize[1] = moon.mSize[2] = 0.5f;
+		moon.mPosition[0] = 2.5f;
 	}
 	
 	@Override
@@ -27,14 +27,14 @@ public class GLSolarSystem extends GLFigure{
 	}
 	
 	public void step(double seconds){
-		rotation.rotateByAngleAxis(seconds * 2 * Math.PI / 10f, 0, 1, 0); 
-		earth.rotation.rotateByAngleAxis(seconds * 2 * Math.PI / 5, 0, 1, 0);
+		mRotation.rotateByAngleAxis(seconds * 2 * Math.PI / 10f, 0, 1, 0); 
+		earth.mRotation.rotateByAngleAxis(seconds * 2 * Math.PI / 5, 0, 1, 0);
 	}
 	
 	public void setTexture(Bitmap earth_textur, Bitmap moon_textur) {
 		earth.setTexture(earth_textur);
 		moon.setTexture(moon_textur);
-		earth.color[0] = earth.color[1] = earth.color[2] = moon.color[0] = moon.color[1] = moon.color[2] = 1;
+		earth.mColor[0] = earth.mColor[1] = earth.mColor[2] = moon.mColor[0] = moon.mColor[1] = moon.mColor[2] = 1;
 	}
 
 }

@@ -20,9 +20,9 @@ public class GLMediaServer extends GLSwitch {
 
 	@Override
 	protected void onDraw(GL10 gl) {
-		box.position[0] = -0.8f;
+		box.mPosition[0] = -0.8f;
 		box.draw(gl);
-		box.position[0] = 0.8f;
+		box.mPosition[0] = 0.8f;
 		box.draw(gl);
 		if (screen != null)
 			screen.draw(gl);
@@ -36,6 +36,14 @@ public class GLMediaServer extends GLSwitch {
 			screen.setOnClickListener(listener);
 	}
 
+	@Override
+	public void setOnLongClickListener(GLClickListener listener) {
+		super.setOnLongClickListener(listener);
+		box.setOnLongClickListener(listener);
+		if (screen != null)
+			screen.setOnLongClickListener(listener);
+	}
+
 	public boolean isPlaying() {
 		return isPlaying;
 	}
@@ -45,7 +53,7 @@ public class GLMediaServer extends GLSwitch {
 		if (!isPlaying)
 			box.setVolume(50);
 	}
-	
+
 	@Override
 	public void setSwitch(boolean on) {
 		super.setSwitch(on);

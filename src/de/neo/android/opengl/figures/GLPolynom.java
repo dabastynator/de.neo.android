@@ -32,7 +32,7 @@ public class GLPolynom extends GLFigure {
 
 		indexBuffer = allocate(indices);
 
-		color[0] = color[1] = color[2] = 0;
+		mColor[0] = mColor[1] = mColor[2] = 0;
 	}
 
 	@Override

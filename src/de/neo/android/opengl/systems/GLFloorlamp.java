@@ -14,26 +14,26 @@ public class GLFloorlamp extends GLSwitch {
 	public GLCube bottom;
 	public GLCube light;
 	public GLCylinder pillar;
-	
+
 	public GLFloorlamp(int style) {
 		super(style);
 		bottom = new GLCube(style);
 		light = new GLCube(style);
 		pillar = new GLCylinder(7, 0.2f, 0.2f, style, false);
 
-		bottom.size[1] = 0.1f;
-		bottom.size[0] = bottom.size[2] = light.size[0] = light.size[2] = 0.5f;
-		bottom.position[1] = 0.1f;
-		light.size[1] = 1.5f;
+		bottom.mSize[1] = 0.1f;
+		bottom.mSize[0] = bottom.mSize[2] = light.mSize[0] = light.mSize[2] = 0.5f;
+		bottom.mPosition[1] = 0.1f;
+		light.mSize[1] = 1.5f;
 
-		light.position[1] = 0.6f + light.size[1] / 2;
+		light.mPosition[1] = 0.6f + light.mSize[1] / 2;
 
-		bottom.color[0] = bottom.color[1] = bottom.color[2] = pillar.color[0] = pillar.color[1] = pillar.color[2] = 0.3f;
+		bottom.mColor[0] = bottom.mColor[1] = bottom.mColor[2] = pillar.mColor[0] = pillar.mColor[1] = pillar.mColor[2] = 0.3f;
 		setSwitch(true);
 
-		pillar.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
-		pillar.position[1] = 0.5f;
-		pillar.size[0] = pillar.size[1] = 0.4f;
+		pillar.mRotation.rotateByAngleAxis(Math.PI / 2, 1, 0, 0);
+		pillar.mPosition[1] = 0.5f;
+		pillar.mSize[0] = pillar.mSize[1] = 0.4f;
 
 	}
 
@@ -44,7 +44,7 @@ public class GLFloorlamp extends GLSwitch {
 		}
 		if ((surface & PILLAR) != 0) {
 			pillar.setTexture(b);
-			pillar.color[0] = pillar.color[1] = pillar.color[2] = 1;
+			pillar.mColor[0] = pillar.mColor[1] = pillar.mColor[2] = 1;
 		}
 		if ((surface & LIGHT) != 0) {
 			light.setTexture(b);
@@ -74,6 +74,14 @@ public class GLFloorlamp extends GLSwitch {
 		bottom.setOnClickListener(listener);
 		light.setOnClickListener(listener);
 		pillar.setOnClickListener(listener);
+	}
+
+	@Override
+	public void setOnLongClickListener(GLClickListener listener) {
+		super.setOnLongClickListener(listener);
+		bottom.setOnLongClickListener(listener);
+		light.setOnLongClickListener(listener);
+		pillar.setOnLongClickListener(listener);
 	}
 
 }

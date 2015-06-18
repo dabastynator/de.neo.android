@@ -24,21 +24,21 @@ public class GLWheel extends GLFigure {
 		// Torus als Schlauch
 		torus = new GLTorus(RADIUS_MAJOR, RADIUS_MINOR, style);
 		// braune Farbe für den Schlauch
-		torus.color[0] = 0.3f;
-		torus.color[1] = 0.171f;
-		torus.color[2] = 0.075f;
+		torus.mColor[0] = 0.3f;
+		torus.mColor[1] = 0.171f;
+		torus.mColor[2] = 0.075f;
 
 		// Speichen des Rades sind Zylinder
 		spokes = new GLFigure[spokeCount];
 		for (int i = 0; i < spokeCount; i++) {
 			spokes[i] = new GLCylinder(10, style);
-			spokes[i].size[0] = 0.05f;
-			spokes[i].size[1] = 0.05f;
-			spokes[i].size[2] = (RADIUS_MAJOR - RADIUS_MINOR) * 2;
-			spokes[i].rotation.rotateByAngleAxis(Math.PI * i / spokeCount, 0, 1, 0);
-			spokes[i].rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
+			spokes[i].mSize[0] = 0.05f;
+			spokes[i].mSize[1] = 0.05f;
+			spokes[i].mSize[2] = (RADIUS_MAJOR - RADIUS_MINOR) * 2;
+			spokes[i].mRotation.rotateByAngleAxis(Math.PI * i / spokeCount, 0, 1, 0);
+			spokes[i].mRotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
 			// graue Farbe für die Speichen
-			spokes[i].color[0] = spokes[i].color[1] = spokes[i].color[2] = 0.3f;
+			spokes[i].mColor[0] = spokes[i].mColor[1] = spokes[i].mColor[2] = 0.3f;
 		}
 	}
 

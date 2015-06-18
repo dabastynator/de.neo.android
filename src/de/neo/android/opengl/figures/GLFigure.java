@@ -62,61 +62,63 @@ public abstract class GLFigure {
 
 	public static void setFigureDrawMode(int draw_mode) {
 		for (GLFigure f : allFigures)
-			f.draw_mode = draw_mode;
+			f.mDrawMode = draw_mode;
 	}
 
 	/**
 	 * Mode for drawing object or picking id
 	 */
-	private int draw_mode;
+	private int mDrawMode;
 
 	/**
 	 * Position
 	 */
-	public float[] position = { 0, 0, 0 };
+	public float[] mPosition = { 0, 0, 0 };
 
 	/**
 	 * Size
 	 */
-	public float[] size = { 1, 1, 1 };
+	public float[] mSize = { 1, 1, 1 };
 
 	/**
 	 * Rotation
 	 */
-	public GLQuaternion rotation;
+	public GLQuaternion mRotation;
 
 	/**
 	 * Color
 	 */
-	public float[] color = { 1, 1, 1, 1 };
-	private float[] lightAmb = new float[4];
-	private float[] lightDif = new float[4];
-	private float[] lightSpe = new float[4];
+	public float[] mColor = { 1, 1, 1, 1 };
+	private float[] mLightAmb = new float[4];
+	private float[] mLightDif = new float[4];
+	private float[] mLightSpe = new float[4];
 	/**
 	 * Textrue
 	 */
-	protected Bitmap texture;
+	protected Bitmap mTexture;
 
-	protected int[] textures;
+	protected int[] mTextures;
 
 	/**
 	 * Unique id for picking object.
 	 */
-	private final int id = ID_COUNTER += 1;
+	private final int mId = ID_COUNTER += 1;
 
 	/**
 	 * Click listener for user interaction
 	 */
-	private GLClickListener listener;
+	private GLClickListener mClickListener;
 
-	protected int style;
+	private GLClickListener mLongClickListener;
+
+	protected int mStyle;
 
 	/**
 	 * allocate new gl figure, it will be registered in a list of all figures.
 	 */
 	public GLFigure(int style) {
-		this.style = style;
-		rotation = new GLQuaternion();
+		mStyle = style;
+		mRotation = new GLQuaternion();
 		allFigures.add(this);
 	}
 
@@ -128,33 +130,33 @@ public abstract class GLFigure {
 	@SuppressLint("WrongCall")
 	public final void draw(GL10 gl) {
 
-		if (draw_mode == DRAW_MODE_PICK_ID && style == STYLE_GRID)
+		if (mDrawMode == DRAW_MODE_PICK_ID && mStyle == STYLE_GRID)
 			return;
 
 		// Eigene Matrix für Figur
 		gl.glPushMatrix();
 
 		// Textur setzen falls eine vorhanden ist
-		if (texture != null && draw_mode == DRAW_MODE_NORMAL)
+		if (mTexture != null && mDrawMode == DRAW_MODE_NORMAL)
 			setTexture(gl);
-		if (draw_mode == DRAW_MODE_NORMAL) {
-			if (!AbstractSceneRenderer.useLighting)
-				gl.glColor4f(color[0], color[1], color[2], color[3]);
+		if (mDrawMode == DRAW_MODE_NORMAL) {
+			if (!AbstractSceneRenderer.mUseLighting)
+				gl.glColor4f(mColor[0], mColor[1], mColor[2], mColor[3]);
 			else {
 				for (int i = 0; i < 4; i++) {
-					lightAmb[i] = color[i] * 0.4f;
-					lightDif[i] = color[i] * 0.8f;
-					lightSpe[i] = Math.min(color[i] * 1.2f, 1);
+					mLightAmb[i] = mColor[i] * 0.4f;
+					mLightDif[i] = mColor[i] * 0.8f;
+					mLightSpe[i] = Math.min(mColor[i] * 1.2f, 1);
 				}
-				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmb, 0);
-				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDif, 0);
-				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR, lightSpe, 0);
+				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, mLightAmb, 0);
+				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, mLightDif, 0);
+				gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR, mLightSpe, 0);
 			}
 		} else {
-			float r = ((float) id % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
-			float g = ((float) (id / IDS_PER_COLOR) % IDS_PER_COLOR)
+			float r = ((float) mId % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
+			float g = ((float) (mId / IDS_PER_COLOR) % IDS_PER_COLOR)
 					/ (IDS_PER_COLOR - 1);
-			float b = ((float) (id / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
+			float b = ((float) (mId / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
 					/ (IDS_PER_COLOR - 1);
 			int ir = (int) (r * 255);
 			int ig = (int) (g * 255);
@@ -166,9 +168,9 @@ public abstract class GLFigure {
 		}
 
 		// Figur positionieren
-		gl.glTranslatef(position[0], position[1], position[2]);
-		rotation.glRotate(gl);
-		gl.glScalef(size[0], size[1], size[2]);
+		gl.glTranslatef(mPosition[0], mPosition[1], mPosition[2]);
+		mRotation.glRotate(gl);
+		gl.glScalef(mSize[0], mSize[1], mSize[2]);
 
 		// Figur zeichnen
 		onDraw(gl);
@@ -177,30 +179,30 @@ public abstract class GLFigure {
 		gl.glPopMatrix();
 
 		// Textur abstellen
-		if (texture != null) {
+		if (mTexture != null) {
 			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
 		}
 	}
 
 	private void setTexture(GL10 gl) {
-		if (textures == null)
+		if (mTextures == null)
 			loadTexture(gl);
 
 		// Enable texture
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, mTextures[0]);
 	}
 
 	private void loadTexture(GL10 gl) {
 		// id für Textur
-		textures = new int[1];
-		if (allTextures.containsKey(texture)) {
-			textures[0] = allTextures.get(texture);
+		mTextures = new int[1];
+		if (allTextures.containsKey(mTexture)) {
+			mTextures[0] = allTextures.get(mTexture);
 		} else {
-			gl.glGenTextures(1, textures, 0);
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+			gl.glGenTextures(1, mTextures, 0);
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, mTextures[0]);
 
 			// Parameter für die Textur
 			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
@@ -213,14 +215,14 @@ public abstract class GLFigure {
 					GL10.GL_REPEAT);
 
 			// Textur setzen
-			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture, 0);
-			allTextures.put(texture, textures[0]);
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, mTexture, 0);
+			allTextures.put(mTexture, mTextures[0]);
 		}
 	}
 
 	public void setTexture(Bitmap b) {
-		texture = b;
-		textures = null;
+		mTexture = b;
+		mTextures = null;
 	}
 
 	protected abstract void onDraw(GL10 gl);
@@ -252,15 +254,20 @@ public abstract class GLFigure {
 	}
 
 	public void setOnClickListener(GLClickListener listener) {
-		this.listener = listener;
+		mClickListener = listener;
+	}
+
+	public void setOnLongClickListener(GLClickListener listener) {
+		mLongClickListener = listener;
 	}
 
 	public static GLFigure searchFigure(int red, int green, int blue) {
 		for (GLFigure figure : allFigures) {
-			float r = ((float) figure.id % IDS_PER_COLOR) / (IDS_PER_COLOR - 1);
-			float g = ((float) (figure.id / IDS_PER_COLOR) % IDS_PER_COLOR)
+			float r = ((float) figure.mId % IDS_PER_COLOR)
 					/ (IDS_PER_COLOR - 1);
-			float b = ((float) (figure.id / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
+			float g = ((float) (figure.mId / IDS_PER_COLOR) % IDS_PER_COLOR)
+					/ (IDS_PER_COLOR - 1);
+			float b = ((float) (figure.mId / IDS_PER_COLOR / IDS_PER_COLOR) % IDS_PER_COLOR)
 					/ (IDS_PER_COLOR - 1);
 			if ((Math.abs(256 * r - red) < (IDS_PER_COLOR / 3f))
 					&& (Math.abs(256 * g - green) < (IDS_PER_COLOR / 3f))
@@ -271,7 +278,11 @@ public abstract class GLFigure {
 	}
 
 	public GLClickListener getOnClickListener() {
-		return listener;
+		return mClickListener;
+	}
+
+	public GLClickListener getOnLongClickListener() {
+		return mLongClickListener;
 	}
 
 	/**
@@ -289,12 +300,12 @@ public abstract class GLFigure {
 	}
 
 	public int getID() {
-		return id;
+		return mId;
 	}
 
 	public static void reloadTextures() {
 		allTextures.clear();
 		for (GLFigure figure : allFigures)
-			figure.textures = null;
+			figure.mTextures = null;
 	}
 }

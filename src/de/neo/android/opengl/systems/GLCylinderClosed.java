@@ -18,58 +18,59 @@ public class GLCylinderClosed extends GLFigure {
 	private GLCircle circleFront;
 	private int surfaces;
 
-	public GLCylinderClosed(int parts, int style){
-		this(parts, style, CYLINDER|FRONT|BACK);
+	public GLCylinderClosed(int parts, int style) {
+		this(parts, style, CYLINDER | FRONT | BACK);
 	}
-	
-	public GLCylinderClosed(int parts, int style, int surfaces){
-		this(parts, style, surfaces, 0.5f,0.5f, false);
+
+	public GLCylinderClosed(int parts, int style, int surfaces) {
+		this(parts, style, surfaces, 0.5f, 0.5f, false);
 	}
-	
+
 	public GLCylinderClosed(int parts, int style, int surfaces,
 			float radiusFront, float radiusBack, boolean invert) {
 		super(style);
 		this.surfaces = surfaces;
 		if ((surfaces & CYLINDER) != 0) {
-			cylinder = new GLCylinder(parts, radiusFront, radiusBack, style, invert);
+			cylinder = new GLCylinder(parts, radiusFront, radiusBack, style,
+					invert);
 		}
 		if ((surfaces & BACK) != 0) {
 			circleBack = new GLCircle(parts, style);
-			circleBack.size[0] = circleBack.size[1] = radiusBack;
+			circleBack.mSize[0] = circleBack.mSize[1] = radiusBack;
 			if (!invert)
-			  circleBack.rotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
-			circleBack.position[2] = -0.5f;
+				circleBack.mRotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
+			circleBack.mPosition[2] = -0.5f;
 		}
 		if ((surfaces & FRONT) != 0) {
 			circleFront = new GLCircle(parts, style);
-			circleFront.size[0] = circleFront.size[1] = radiusFront;
+			circleFront.mSize[0] = circleFront.mSize[1] = radiusFront;
 			if (invert)
-				  circleBack.rotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
-			circleFront.position[2] = 0.5f;
+				circleBack.mRotation.rotateByAngleAxis(Math.PI, 0, 1, 0);
+			circleFront.mPosition[2] = 0.5f;
 		}
 	}
 
 	public void setColor(int surface, float red, float green, float blue) {
 		if ((surface & CYLINDER) != 0) {
-			cylinder.color[0] = red;
-			cylinder.color[1] = green;
-			cylinder.color[2] = blue;
+			cylinder.mColor[0] = red;
+			cylinder.mColor[1] = green;
+			cylinder.mColor[2] = blue;
 		}
 		if ((surface & BACK) != 0) {
-			circleBack.color[0] = red;
-			circleBack.color[1] = green;
-			circleBack.color[2] = blue;
+			circleBack.mColor[0] = red;
+			circleBack.mColor[1] = green;
+			circleBack.mColor[2] = blue;
 		}
 		if ((surface & FRONT) != 0) {
-			circleFront.color[0] = red;
-			circleFront.color[1] = green;
-			circleFront.color[2] = blue;
+			circleFront.mColor[0] = red;
+			circleFront.mColor[1] = green;
+			circleFront.mColor[2] = blue;
 		}
 	}
-	
+
 	@Override
 	public void setTexture(Bitmap b) {
-		setTexture(CYLINDER|FRONT|BACK, b);
+		setTexture(CYLINDER | FRONT | BACK, b);
 	}
 
 	public void setTexture(int surface, Bitmap texture) {
@@ -93,19 +94,30 @@ public class GLCylinderClosed extends GLFigure {
 		if ((surfaces & FRONT) != 0)
 			circleFront.draw(gl);
 	}
-	
+
 	@Override
 	public void setOnClickListener(GLClickListener listener) {
 		super.setOnClickListener(listener);
-		if(cylinder != null)
+		if (cylinder != null)
 			cylinder.setOnClickListener(listener);
-		if(circleBack != null)
+		if (circleBack != null)
 			circleBack.setOnClickListener(listener);
-		if(circleFront != null)
+		if (circleFront != null)
 			circleFront.setOnClickListener(listener);
 	}
 
+	@Override
+	public void setOnLongClickListener(GLClickListener listener) {
+		super.setOnLongClickListener(listener);
+		if (cylinder != null)
+			cylinder.setOnLongClickListener(listener);
+		if (circleBack != null)
+			circleBack.setOnLongClickListener(listener);
+		if (circleFront != null)
+			circleFront.setOnLongClickListener(listener);
+	}
+
 	public void setColor(float red, float green, float blue) {
-		setColor(BACK|FRONT|CYLINDER, red, green, blue);
+		setColor(BACK | FRONT | CYLINDER, red, green, blue);
 	}
 }

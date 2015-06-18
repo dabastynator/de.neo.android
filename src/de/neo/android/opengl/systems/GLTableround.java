@@ -18,32 +18,32 @@ public class GLTableround extends GLFigure {
 	public GLTableround(int style, float height, float width) {
 		super(style);
 		cylinder = new GLCylinderClosed(30, style);
-		cylinder.size[2] = 0.1f;
-		cylinder.size[0] = cylinder.size[1] = width;
-		cylinder.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
-		cylinder.position[1] = height;
+		cylinder.mSize[2] = 0.1f;
+		cylinder.mSize[0] = cylinder.mSize[1] = width;
+		cylinder.mRotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
+		cylinder.mPosition[1] = height;
 		cylinder.setColor(0.5f, 0.5f, 0.5f);
 
 		pillar = new GLCube(style);
-		pillar.size[0] = pillar.size[2] = 0.1f;
-		pillar.size[1] = cylinder.position[1];
-		pillar.position[1] = pillar.size[1] / 2;
-		pillar.color[0] = pillar.color[1] = pillar.color[2] = 0;
+		pillar.mSize[0] = pillar.mSize[2] = 0.1f;
+		pillar.mSize[1] = cylinder.mPosition[1];
+		pillar.mPosition[1] = pillar.mSize[1] / 2;
+		pillar.mColor[0] = pillar.mColor[1] = pillar.mColor[2] = 0;
 
 		bottom = new GLCube(style);
-		bottom.size[0] = width * 0.7f;
-		bottom.size[1] = 0.2f;
-		bottom.size[2] = 0.2f;
-		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0;
+		bottom.mSize[0] = width * 0.7f;
+		bottom.mSize[1] = 0.2f;
+		bottom.mSize[2] = 0.2f;
+		bottom.mColor[0] = bottom.mColor[1] = bottom.mColor[2] = 0;
 	}
 
 	@Override
 	protected void onDraw(GL10 gl) {
 		cylinder.draw(gl);
 		pillar.draw(gl);
-		bottom.rotation.einselement();
+		bottom.mRotation.einselement();
 		bottom.draw(gl);
-		bottom.rotation.rotateByAngleAxis(Math.PI/2, 0, 1, 0);
+		bottom.mRotation.rotateByAngleAxis(Math.PI/2, 0, 1, 0);
 		bottom.draw(gl);
 	}
 

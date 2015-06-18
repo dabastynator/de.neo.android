@@ -66,10 +66,10 @@ public class GLSquare extends GLFigure {
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glNormalPointer(GL10.GL_FLOAT, 0, normalBuffer);
 
-		if (texture != null)
+		if (mTexture != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBuffer);
 		if (colorBuffer != null) {
-			color[0] = color[1] = color[2] = 1;
+			mColor[0] = mColor[1] = mColor[2] = 1;
 			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
 		}

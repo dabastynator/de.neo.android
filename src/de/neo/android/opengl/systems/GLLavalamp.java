@@ -5,7 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import de.neo.android.opengl.figures.GLCircle;
 import de.neo.android.opengl.figures.GLFunctionFigure;
 
-public class GLLavalamp extends GLSwitch{
+public class GLLavalamp extends GLSwitch {
 
 	private GLFunctionFigure function;
 	private GLCircle top;
@@ -21,28 +21,28 @@ public class GLLavalamp extends GLSwitch{
 		function = new GLFunctionFigure(parts, style, f);
 		top = new GLCircle(parts, style);
 		bottom = new GLCircle(parts, style);
-		top.size[0] = top.size[1] = f.getValue(1);
-		top.position[1] = 1;
-		bottom.size[0] = bottom.size[1] = f.getValue(0);
-		bottom.position[1] = 0;
-		top.rotation.rotateByAngleAxis(-Math.PI/2, 1, 0, 0);
-		bottom.rotation.rotateByAngleAxis(Math.PI/2, 1, 0, 0);
+		top.mSize[0] = top.mSize[1] = f.getValue(1);
+		top.mPosition[1] = 1;
+		bottom.mSize[0] = bottom.mSize[1] = f.getValue(0);
+		bottom.mPosition[1] = 0;
+		top.mRotation.rotateByAngleAxis(-Math.PI / 2, 1, 0, 0);
+		bottom.mRotation.rotateByAngleAxis(Math.PI / 2, 1, 0, 0);
 		//
 		setSwitch(true);
-		bottom.color[0] = bottom.color[1] = bottom.color[2] = 0.2f;
+		bottom.mColor[0] = bottom.mColor[1] = bottom.mColor[2] = 0.2f;
 
-		size[1] = 1f;
-		size[0] = size[2] = 0.4f;
+		mSize[1] = 1f;
+		mSize[0] = mSize[2] = 0.4f;
 	}
 
 	public void setSwitch(boolean b) {
 		super.setSwitch(b);
 		if (b) {
-			function.color[0] = top.color[0] = 1f;
-			function.color[1] = function.color[2] = top.color[1] = top.color[2] = 0.4f;
+			function.mColor[0] = top.mColor[0] = 1f;
+			function.mColor[1] = function.mColor[2] = top.mColor[1] = top.mColor[2] = 0.4f;
 		} else {
-			function.color[0] = top.color[0] = 0.4f;
-			function.color[1] = function.color[2] = top.color[1] = top.color[2] = 0;
+			function.mColor[0] = top.mColor[0] = 0.4f;
+			function.mColor[1] = function.mColor[2] = top.mColor[1] = top.mColor[2] = 0;
 		}
 	}
 
@@ -52,6 +52,14 @@ public class GLLavalamp extends GLSwitch{
 		function.setOnClickListener(listener);
 		top.setOnClickListener(listener);
 		bottom.setOnClickListener(listener);
+	}
+
+	@Override
+	public void setOnLongClickListener(GLClickListener listener) {
+		super.setOnLongClickListener(listener);
+		function.setOnLongClickListener(listener);
+		top.setOnLongClickListener(listener);
+		bottom.setOnLongClickListener(listener);
 	}
 
 	@Override

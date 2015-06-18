@@ -153,7 +153,7 @@ public class GLBoxplate extends GLFigure {
 
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
-		if (texture != null && mTextureBuffer != null)
+		if (mTexture != null && mTextureBuffer != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBuffer);
 
 		gl.glDrawElements(drawStyle, indices.length, GL10.GL_UNSIGNED_SHORT,

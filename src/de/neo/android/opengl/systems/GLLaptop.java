@@ -27,31 +27,31 @@ public class GLLaptop extends GLFigure {
 	private void initDisplay() {
 		init(display);
 		for (int i = 0; i < 3; i++) {
-			display.squares[0].color[i] = 0;
-			display.squares[5].color[i] = 1;
-			display.squares[1].color[i] = 0;
-			display.squares[2].color[i] = 0;
-			display.squares[3].color[i] = 0;
-			display.squares[4].color[i] = 0;
+			display.squares[0].mColor[i] = 0;
+			display.squares[5].mColor[i] = 1;
+			display.squares[1].mColor[i] = 0;
+			display.squares[2].mColor[i] = 0;
+			display.squares[3].mColor[i] = 0;
+			display.squares[4].mColor[i] = 0;
 		}
 	}
 
 	private void init(GLCube cube) {
-		cube.size[0] = 1;
-		cube.size[1] = 0.05f;
-		cube.size[2] = 0.6f;
-		cube.position[2] = cube.size[2] / 2;
+		cube.mSize[0] = 1;
+		cube.mSize[1] = 0.05f;
+		cube.mSize[2] = 0.6f;
+		cube.mPosition[2] = cube.mSize[2] / 2;
 	}
 
 	private void initKeyboard() {
 		init(keyboard);
 		for (int i = 0; i < 3; i++) {
-			keyboard.squares[4].color[i] = 1;
-			keyboard.squares[0].color[i] = 0;
-			keyboard.squares[1].color[i] = 0;
-			keyboard.squares[2].color[i] = 0;
-			keyboard.squares[3].color[i] = 0;
-			keyboard.squares[5].color[i] = 0;
+			keyboard.squares[4].mColor[i] = 1;
+			keyboard.squares[0].mColor[i] = 0;
+			keyboard.squares[1].mColor[i] = 0;
+			keyboard.squares[2].mColor[i] = 0;
+			keyboard.squares[3].mColor[i] = 0;
+			keyboard.squares[5].mColor[i] = 0;
 		}
 	}
 
@@ -59,6 +59,12 @@ public class GLLaptop extends GLFigure {
 	public void setOnClickListener(GLClickListener listener) {
 		keyboard.setOnClickListener(listener);
 		display.setOnClickListener(listener);
+	}
+	
+	@Override
+	public void setOnLongClickListener(GLClickListener listener) {
+		keyboard.setOnLongClickListener(listener);
+		display.setOnLongClickListener(listener);
 	}
 
 	public void setTexture(int surface, Bitmap b) {

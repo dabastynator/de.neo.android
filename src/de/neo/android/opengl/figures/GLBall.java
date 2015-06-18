@@ -92,7 +92,7 @@ public class GLBall extends GLFigure {
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glNormalPointer(GL10.GL_FLOAT, 0, vertexBuffer);
 		
-		if (texture != null)
+		if (mTexture != null)
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
 
 		// Punke zeichnen

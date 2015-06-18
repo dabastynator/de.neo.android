@@ -32,37 +32,39 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	/**
 	 * Use lighting in scene.
 	 */
-	public static boolean useLighting = true;
+	public static boolean mUseLighting = true;
 
 	/**
 	 * Current scene object.
 	 */
-	public GLFigure scene;
+	public GLFigure mScene;
 
 	/**
 	 * The texture map holds all textures to avoid double loading of one
 	 * texture.
 	 */
-	protected SparseArray<Bitmap> textureMap;
+	protected SparseArray<Bitmap> mTextureMap;
 
-	public Thread glThread;
-	private boolean selectObject;
-	private int selectX;
-	private int selectY;
-	private View view;
-	private GLSquare gradient;
-	private TouchSceneHandler touchSceneHandler;
+	public Thread mGLThread;
+	private boolean mSelectObject;
+	private int mSelectX;
+	private int mSelectY;
+	private View mView;
+	private GLSquare mGradient;
+	private TouchSceneHandler mTouchSceneHandler;
 
-	protected Context context;
+	protected Context mContext;
 
-	private float screenRatio;
+	private float mScreenRatio;
+
+	private boolean mLongClick;
 
 	/**
 	 * allocate new abstract scene renderer.
 	 */
 	public AbstractSceneRenderer(Context context) {
-		this.context = context;
-		scene = createScene();
+		this.mContext = context;
+		mScene = createScene();
 		setTouchSceneHandler(new RotateSceneHandler());
 		setLighting(true);
 	}
@@ -75,14 +77,14 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	protected abstract GLFigure createScene();
 
 	protected void setLighting(boolean b) {
-		useLighting = b;
+		mUseLighting = b;
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		if (selectObject) {
-			selectObject(gl, selectX, selectY);
-			selectObject = false;
+		if (mSelectObject) {
+			selectObject(gl, mSelectX, mSelectY);
+			mSelectObject = false;
 		}
 		renderScene(gl, 1, 1, 1);
 	}
@@ -90,21 +92,21 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	private void renderScene(GL10 gl, float red, float green, float blue) {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glClearColor(red, green, blue, 0f);
-		if (gradient != null) {
+		if (mGradient != null) {
 			gl.glDisable(GL10.GL_DEPTH_TEST);
 			gl.glDisable(GL10.GL_LIGHTING);
 			gl.glLoadIdentity();
 			gl.glTranslatef(0, 0, -1.2f);
-			gradient.draw(gl);
+			mGradient.draw(gl);
 			gl.glEnable(GL10.GL_DEPTH_TEST);
 		}
 		gl.glLoadIdentity();
-		touchSceneHandler.glTransformScene(gl);
+		mTouchSceneHandler.glTransformScene(gl);
 		gl.glLineWidth(1);
-		if (useLighting && !selectObject) {
+		if (mUseLighting && !mSelectObject) {
 			gl.glEnable(GL10.GL_LIGHTING);
 		}
-		scene.draw(gl);
+		mScene.draw(gl);
 	}
 
 	private void selectObject(GL10 gl, int selectX, int selectY) {
@@ -127,8 +129,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	}
 
 	protected void onFigureTouched(GL10 gl, GLFigure figure) {
-		if (figure.getOnClickListener() != null)
+		if (!mLongClick && figure.getOnClickListener() != null)
 			figure.getOnClickListener().onGLClick();
+		if (mLongClick && figure.getOnLongClickListener() != null)
+			figure.getOnLongClickListener().onGLClick();
 	}
 
 	protected void onNoFigureTouched(GL10 gl) {
@@ -137,8 +141,8 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	}
 
 	protected void setGradient(float[] bottom, float[] top) {
-		if (gradient == null) {
-			gradient = new GLSquare(GLFigure.STYLE_PLANE);
+		if (mGradient == null) {
+			mGradient = new GLSquare(GLFigure.STYLE_PLANE);
 		}
 		float[] colors = new float[16];
 		for (int i = 0; i < 4; i++) {
@@ -147,22 +151,22 @@ public abstract class AbstractSceneRenderer implements Renderer {
 			colors[i + 8] = bottom[i];
 			colors[i + 12] = top[i];
 		}
-		gradient.setVertexColor(colors);
+		mGradient.setVertexColor(colors);
 	}
 
 	protected void setGradient(Bitmap b) {
-		if (gradient == null) {
-			gradient = new GLSquare(GLFigure.STYLE_PLANE);
+		if (mGradient == null) {
+			mGradient = new GLSquare(GLFigure.STYLE_PLANE);
 		}
-		gradient.setTexture(b);
+		mGradient.setTexture(b);
 	}
 
 	protected void setTouchSceneHandler(TouchSceneHandler handler) {
-		touchSceneHandler = handler;
+		mTouchSceneHandler = handler;
 	}
 
 	protected int getColorAtPixel(GL10 gl, int sx, int sy) {
-		int h = view.getHeight();
+		int h = mView.getHeight();
 		int b[] = new int[4];
 		IntBuffer ib = IntBuffer.wrap(b);
 		ib.position(0);
@@ -181,11 +185,11 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		screenRatio = (float) width / (float) height;
-		if (gradient != null) {
-			gradient.size[0] = screenRatio;
+		mScreenRatio = (float) width / (float) height;
+		if (mGradient != null) {
+			mGradient.mSize[0] = mScreenRatio;
 		}
-		GLU.gluPerspective(gl, 45.0f, screenRatio, 0.1f, 100.0f);
+		GLU.gluPerspective(gl, 45.0f, mScreenRatio, 0.1f, 100.0f);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 	}
@@ -214,7 +218,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	}
 
 	public void onTouchEvent(MotionEvent event) {
-		touchSceneHandler.onTouchEvent(event);
+		mTouchSceneHandler.onTouchEvent(event);
 	}
 
 	/**
@@ -225,20 +229,20 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @return bitmap
 	 */
 	protected Bitmap loadBitmap(int id) {
-		if (textureMap == null)
-			textureMap = new SparseArray<Bitmap>();
-		if (textureMap.indexOfKey(id) > 0)
-			return textureMap.get(id);
+		if (mTextureMap == null)
+			mTextureMap = new SparseArray<Bitmap>();
+		if (mTextureMap.indexOfKey(id) > 0)
+			return mTextureMap.get(id);
 		Matrix flip = new Matrix();
 		flip.postScale(1f, -1f);
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		Bitmap b = BitmapFactory.decodeResource(context.getResources(), id,
+		Bitmap b = BitmapFactory.decodeResource(mContext.getResources(), id,
 				opts);
 		Bitmap bitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
 				b.getHeight(), flip, true);
 		b.recycle();
-		textureMap.put(id, bitmap);
+		mTextureMap.put(id, bitmap);
 		return bitmap;
 	}
 
@@ -248,7 +252,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @param outState
 	 */
 	public void onSaveInstanceState(Bundle outState) {
-		touchSceneHandler.onSaveInstanceState(outState);
+		mTouchSceneHandler.onSaveInstanceState(outState);
 	}
 
 	/**
@@ -257,7 +261,7 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @param bundle
 	 */
 	public void onLoadBundle(Bundle bundle) {
-		touchSceneHandler.onLoadBundle(bundle);
+		mTouchSceneHandler.onLoadBundle(bundle);
 	}
 
 	/**
@@ -268,10 +272,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	 * @param view
 	 */
 	public void selectFigure(int x, int y, View view) {
-		this.selectObject = true;
-		this.selectX = x;
-		this.selectY = y;
-		this.view = view;
+		this.mSelectObject = true;
+		this.mSelectX = x;
+		this.mSelectY = y;
+		this.mView = view;
 	}
 
 	/**
@@ -283,8 +287,8 @@ public abstract class AbstractSceneRenderer implements Renderer {
 	protected Bitmap loadBitmapFromView(GL10 gl) {
 		int x = 0;
 		int y = 0;
-		int w = view.getWidth();
-		int h = view.getHeight();
+		int w = mView.getWidth();
+		int h = mView.getHeight();
 		int b[] = new int[w * h];
 		int bt[] = new int[w * h];
 		IntBuffer ib = IntBuffer.wrap(b);
@@ -303,6 +307,10 @@ public abstract class AbstractSceneRenderer implements Renderer {
 		}
 		Bitmap sb = Bitmap.createBitmap(bt, w, h, Bitmap.Config.ARGB_8888);
 		return sb;
+	}
+
+	public void setLongClick(boolean longClick) {
+		mLongClick = longClick;
 	}
 
 }
