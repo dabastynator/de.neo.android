@@ -111,6 +111,8 @@ public class GLCube extends GLFigure {
 
 	@Override
 	protected void onDraw(GL10 gl) {
+		gl.glEnable(GL10.GL_CULL_FACE);
+		gl.glCullFace(GL10.GL_FRONT);
 		for (int i = 0; i < squares.length; i++) {
 			if (squares[i] != null) {
 				squares[i].draw(gl);

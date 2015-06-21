@@ -43,6 +43,7 @@ public class GLBox extends GLFigure {
 	@Override
 	protected void onDraw(GL10 gl) {
 		gl.glEnable(GL10.GL_CULL_FACE);
+		gl.glCullFace(GL10.GL_FRONT);
 		cube.draw(gl);
 		if (mStyle == STYLE_PLANE)
 			plate.draw(gl);
