@@ -24,6 +24,8 @@ public class PersistentLongArray extends PersistentField {
 	}
 
 	private long[] parseArray(String string) {
+		if ("null".equals(string))
+			return null;
 		String[] split = string.replace("[", "").replace("]", "").split(",");
 		long[] longs = new long[split.length];
 		for (int i = 0; i < split.length; i++)
