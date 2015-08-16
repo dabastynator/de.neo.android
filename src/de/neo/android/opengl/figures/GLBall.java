@@ -37,6 +37,7 @@ public class GLBall extends GLFigure {
 		}
 		mVertexBuffer = allocate(vertices);
 		mTextureBuffer = allocate(texture);
+		mIndexCount = texture.length;
 
 		if (style == STYLE_GRID)
 			createGridIndices(slices);
@@ -88,7 +89,9 @@ public class GLBall extends GLFigure {
 	@Override
 	protected void onDraw(GL10 gl) {
 		gl.glEnable(GL10.GL_CULL_FACE);
+		gl.glFrontFace(GL10.GL_CCW);
 		gl.glCullFace(GL10.GL_FRONT);
+		
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
