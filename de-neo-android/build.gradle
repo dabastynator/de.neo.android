@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'de-neo-android'
+
+    publishedGroupId = 'de.bastynator'
+    libraryName = 'de.neo.android'
+    artifact = 'de-neo-android'
+
+    libraryDescription = 'Common methods to persist java objects in the sqlite and obengl helper classes'
+
+    siteUrl = 'https://github.com/dabastynator/de.neo.android'
+    gitUrl = 'https://github.com/dabastynator/de.neo.android.git'
+
+    libraryVersion = '0.8.2'
+
+    developerId = 'bastynator'
+    developerName = 'Sebastian Pichlmeier'
+    developerEmail = 'pichlmeier.sebastian@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 26
+    }
+
+    buildTypes {
+    }
+
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
